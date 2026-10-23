@@ -12,11 +12,9 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
-        'email',
+        'nip',
         'password',
         'role_id',
-        'status',
-        'email_verified_at',
         'last_login_at',
     ];
 
@@ -27,7 +25,6 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'last_login_at' => 'datetime',
             'password' => 'hashed',
         ];
@@ -36,11 +33,6 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class);
-    }
-
-    public function tokens()
-    {
-        return $this->hasMany(UserToken::class);
     }
 
     public function hasRole(...$roles)

@@ -11,11 +11,9 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->string('email', 150)->unique();
-            $table->string('password')->nullable(); // kosong sampai akun diaktivasi
+            $table->char('nip', 11)->unique();
+            $table->string('password');
             $table->foreignId('role_id')->constrained('roles');
-            $table->enum('status', ['menunggu_verifikasi', 'aktif', 'nonaktif'])->default('menunggu_verifikasi');
-            $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('last_login_at')->nullable();
             $table->timestamps();
             $table->softDeletes();

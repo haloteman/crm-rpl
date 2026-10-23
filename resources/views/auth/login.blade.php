@@ -12,9 +12,9 @@
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
-        <label>Email</label>
-        <input type="email" name="email" value="{{ old('email') }}">
-        @error('email') <p>{{ $message }}</p> @enderror
+        <label>NIP</label>
+        <input type="text" name="nip" value="{{ old('nip') }}">
+        @error('nip') <p>{{ $message }}</p> @enderror
 
         <label>Password</label>
         <input type="password" name="password">

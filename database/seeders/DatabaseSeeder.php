@@ -23,20 +23,18 @@ class DatabaseSeeder extends Seeder
 
         // akun buat testing, password semua: password123
         $users = [
-            ['name' => 'Owner TipeCreative', 'email' => 'owner@tipecreative.test', 'role' => Role::OWNER],
-            ['name' => 'Super Admin', 'email' => 'superadmin@tipecreative.test', 'role' => Role::SUPER_ADMIN],
-            ['name' => 'Admin', 'email' => 'admin@tipecreative.test', 'role' => Role::ADMIN],
-            ['name' => 'Kepala Staf Design', 'email' => 'design@tipecreative.test', 'role' => Role::KEPALA_STAF_DESIGN],
+            ['name' => 'Owner TipeCreative', 'nip' => '10000000001', 'role' => Role::OWNER],
+            ['name' => 'Super Admin', 'nip' => '10000000002', 'role' => Role::SUPER_ADMIN],
+            ['name' => 'Admin', 'nip' => '10000000003', 'role' => Role::ADMIN],
+            ['name' => 'Kepala Staf Design', 'nip' => '10000000004', 'role' => Role::KEPALA_STAF_DESIGN],
         ];
 
         foreach ($users as $user) {
             User::create([
                 'name' => $user['name'],
-                'email' => $user['email'],
+                'nip' => $user['nip'],
                 'password' => 'password123',
                 'role_id' => Role::where('name', $user['role'])->value('id'),
-                'status' => 'aktif',
-                'email_verified_at' => now(),
             ]);
         }
     }

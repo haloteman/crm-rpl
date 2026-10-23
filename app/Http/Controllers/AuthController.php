@@ -17,17 +17,17 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'nip' => 'required',
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('nip', $request->nip)->first();
 
-        // pesan error disamain biar nggak ketahuan email mana yang terdaftar (NF-10)
-        if (! $user || $user->status !== 'aktif' || ! Hash::check($request->password, $user->password)) {
+        // pesan error disamain biar nggak ketahuan NIP mana yang terdaftar
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             return back()
-                ->withErrors(['email' => 'Email atau password salah'])
-                ->onlyInput('email');
+                ->withErrors(['nip' => 'NIP atau password salah'])
+                ->onlyInput('nip');
         }
 
         Auth::login($user);
