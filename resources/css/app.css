@@ -6,6 +6,27 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-brand: #0168dd;       /* sidebar, tombol login */
+    --color-brand-dark: #1552d4;  /* header atas, tombol Tambah/Simpan */
+    --color-canvas: #f2f2f2;      /* latar halaman */
+    --color-thead: #d9d9d9;       /* header tabel / kartu placeholder */
+    --color-won: #12921a;
+    --color-lost: #f20c0c;
+}
+
+[x-cloak] { display: none !important; }
+
+@layer base {
+    body { @apply bg-canvas text-black antialiased; }
+}
+
+@layer components {
+    .card { @apply rounded-lg bg-white shadow-[2px_3px_4px_rgba(0,0,0,0.25)]; }
+    .field { @apply w-full rounded-lg border border-black bg-white px-4 py-2.5 text-base outline-none focus:ring-2 focus:ring-brand/40; }
+    .btn-primary { @apply inline-flex items-center justify-center rounded-sm bg-brand-dark px-6 py-2.5 text-base font-medium text-white hover:bg-brand disabled:opacity-60; }
+    .btn-outline { @apply inline-flex items-center justify-center rounded-sm border bg-white px-6 py-2.5 text-base font-medium; }
+    .copy-chip { @apply inline-flex items-center gap-1 rounded-full bg-[#d9d9d9] px-3 py-1 text-xs text-black hover:bg-slate-300; }
 }
