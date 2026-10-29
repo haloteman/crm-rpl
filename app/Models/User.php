@@ -48,4 +48,23 @@ class User extends Authenticatable
 
         return in_array($this->role->name, $roleYangBoleh);
     }
+
+    public function halamanBeranda()
+    {
+        if ($this->hasRole(Role::SUPER_ADMIN)) {
+            return 'users.index';
+        }
+
+        return 'dashboard';
+    }
+
+    public function canDelete($target)
+    {
+        return ! $target->hasRole(Role::OWNER) && $target->id !== $this->id;
+    }
+
+    public function canResetPassword($target)
+    {
+        return $target->id !== $this->id;
+    }
 }

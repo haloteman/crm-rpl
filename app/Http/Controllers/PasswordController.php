@@ -31,6 +31,6 @@ class PasswordController extends Controller
             'must_change_password' => false,
         ]);
 
-        return redirect()->route('dashboard')->with('status', 'Password berhasil diubah');
+        return redirect()->route($request->user()->halamanBeranda())->with('status', 'Password berhasil diubah');
     }
 }

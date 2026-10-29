@@ -34,6 +34,6 @@
         <button type="submit" class="text-sm text-slate-500 hover:underline">Logout</button>
     </form>
 @else
-    <a href="{{ route('dashboard') }}" class="mt-4 block text-center text-sm text-slate-500 hover:underline">Kembali</a>
+    <a href="{{ route('beranda') }}" class="mt-4 block text-center text-sm text-slate-500 hover:underline">Kembali</a>
 @endif
 @endsection

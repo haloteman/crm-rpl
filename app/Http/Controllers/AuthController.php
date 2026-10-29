@@ -34,7 +34,7 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $user->update(['last_login_at' => now()]);
 
-        return redirect()->route('dashboard');
+        return redirect()->route($user->halamanBeranda());
     }
 
     public function logout(Request $request)
