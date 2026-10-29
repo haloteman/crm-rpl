@@ -19,6 +19,9 @@ class AuthController extends Controller
         $request->validate([
             'nip' => 'required',
             'password' => 'required',
+        ], [
+            'nip.required' => 'NIP wajib diisi',
+            'password.required' => 'Password wajib diisi',
         ]);
 
         $user = User::where('nip', $request->nip)->first();
