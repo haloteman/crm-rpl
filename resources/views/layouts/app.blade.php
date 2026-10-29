@@ -41,6 +41,7 @@
                 <div class="truncate font-medium">{{ auth()->user()->name }}</div>
                 <div class="text-white/70">{{ auth()->user()->role->name }}</div>
             </div>
+            <a href="{{ route('password.edit') }}" class="block rounded-lg px-3 py-2 hover:bg-white/10">Ubah Password</a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-white/10">

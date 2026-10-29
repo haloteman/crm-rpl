@@ -15,6 +15,7 @@ class User extends Authenticatable
         'nip',
         'password',
         'role_id',
+        'must_change_password',
         'last_login_at',
     ];
 
@@ -25,6 +26,7 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'must_change_password' => 'boolean',
             'last_login_at' => 'datetime',
             'password' => 'hashed',
         ];
