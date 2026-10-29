@@ -10,10 +10,19 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'akses'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        // sementara 0 dulu, modul deal belum ada
+        return view('dashboard', [
+            'periode' => now()->translatedFormat('F Y'),
+            'stats' => [
+                'won_revenue' => 0,
+                'lost_revenue' => 0,
+                'deals_won' => 0,
+                'deals_lost' => 0,
+            ],
+        ]);
     })->name('dashboard');
 });

@@ -39,4 +39,11 @@ class User extends Authenticatable
     {
         return in_array($this->role->name, $roles);
     }
+
+    public function bolehAkses($halaman)
+    {
+        $roleYangBoleh = config('akses')[$halaman] ?? [];
+
+        return in_array($this->role->name, $roleYangBoleh);
+    }
 }

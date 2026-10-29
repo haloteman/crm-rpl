@@ -9,11 +9,11 @@
         ['route' => 'follow-up',   'label' => 'Follow up',   'icon' => 'follow-up'],
         ['route' => 'kesepakatan', 'label' => 'Kesepakatan', 'icon' => 'kesepakatan'],
         ['route' => 'pembayaran',  'label' => 'Pembayaran',  'icon' => 'pembayaran'],
+        ['route' => 'users.index', 'label' => 'Pengguna',    'icon' => 'users', 'match' => 'users.*'],
+        ['route' => 'settings',    'label' => 'Settings',    'icon' => 'settings'],
     ];
-    if (auth()->user()->hasRole(...\App\Models\Role::USER_MANAGERS)) {
-        $menu[] = ['route' => 'users.index', 'label' => 'Pengguna', 'icon' => 'users', 'match' => 'users.*'];
-    }
-    $menu[] = ['route' => 'settings', 'label' => 'Settings', 'icon' => 'settings'];
+
+    $menu = array_filter($menu, fn ($item) => Route::has($item['route']) && auth()->user()->bolehAkses($item['route']));
 @endphp
 
 @section('body')
