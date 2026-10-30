@@ -19,6 +19,9 @@ class AuthController extends Controller
         $request->validate([
             'nip' => 'required',
             'password' => 'required',
+        ], [
+            'nip.required' => 'NIP wajib diisi',
+            'password.required' => 'Password wajib diisi',
         ]);
 
         $user = User::where('nip', $request->nip)->first();
@@ -34,7 +37,7 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $user->update(['last_login_at' => now()]);
 
-        return redirect()->route('dashboard');
+        return redirect()->route($user->halamanBeranda());
     }
 
     public function logout(Request $request)

@@ -14,7 +14,8 @@ class DatabaseSeeder extends Seeder
             Role::OWNER => 'Pemegang lisensi, kedudukan tertinggi',
             Role::SUPER_ADMIN => 'Pengelola akun pengguna',
             Role::ADMIN => 'Mengelola data dan komunikasi pelanggan',
-            Role::KEPALA_STAF_DESIGN => 'Mengelola pengerjaan desain dan revisi',
+            Role::KEPALA_STAF_DESIGN => 'Menugaskan proyek ke desainer, mengelola desain dan revisi',
+            Role::DESAINER => 'Mengerjakan proyek yang ditugaskan',
         ];
 
         foreach ($roles as $name => $description) {
@@ -27,6 +28,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Super Admin', 'nip' => '10000000002', 'role' => Role::SUPER_ADMIN],
             ['name' => 'Admin', 'nip' => '10000000003', 'role' => Role::ADMIN],
             ['name' => 'Kepala Staf Design', 'nip' => '10000000004', 'role' => Role::KEPALA_STAF_DESIGN],
+            ['name' => 'Desainer', 'nip' => '10000000005', 'role' => Role::DESAINER],
         ];
 
         foreach ($users as $user) {

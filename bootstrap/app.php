@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'akses' => \App\Http\Middleware\CekAkses::class,
+            'wajib-ganti-password' => \App\Http\Middleware\WajibGantiPassword::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

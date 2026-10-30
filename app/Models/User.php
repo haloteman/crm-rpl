@@ -15,6 +15,7 @@ class User extends Authenticatable
         'nip',
         'password',
         'role_id',
+        'must_change_password',
         'last_login_at',
     ];
 
@@ -25,6 +26,7 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'must_change_password' => 'boolean',
             'last_login_at' => 'datetime',
             'password' => 'hashed',
         ];
@@ -38,5 +40,31 @@ class User extends Authenticatable
     public function hasRole(...$roles)
     {
         return in_array($this->role->name, $roles);
+    }
+
+    public function bolehAkses($halaman)
+    {
+        $roleYangBoleh = config('akses')[$halaman] ?? [];
+
+        return in_array($this->role->name, $roleYangBoleh);
+    }
+
+    public function halamanBeranda()
+    {
+        if ($this->hasRole(Role::SUPER_ADMIN)) {
+            return 'users.index';
+        }
+
+        return 'dashboard';
+    }
+
+    public function canDelete($target)
+    {
+        return ! $target->hasRole(Role::OWNER) && $target->id !== $this->id;
+    }
+
+    public function canResetPassword($target)
+    {
+        return $target->id !== $this->id;
     }
 }
