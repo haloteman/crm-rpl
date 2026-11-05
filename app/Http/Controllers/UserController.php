@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\CredentialService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
@@ -30,7 +31,8 @@ class UserController extends Controller
             ->view('users.index', [
                 'users' => $query->paginate(10)->withQueryString(),
                 'totalAkun' => User::count(),
-                'semuaRole' => Role::all(),
+                'semuaRole' => Role::with('permissions')->orderBy('id')->get(),
+                'semuaIzin' => Permission::orderBy('id')->get(),
                 'pilihanRole' => $this->pilihanRole(),
             ])
             ->header('Cache-Control', 'no-store');

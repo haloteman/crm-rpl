@@ -129,6 +129,43 @@
 
     <p class="mt-4 text-xs text-slate-500">Akun yang sudah dihapus tidak ditampilkan. Password tidak ditampilkan dalam daftar pengguna.</p>
 
+    {{-- hak akses tiap role, cuma untuk dilihat --}}
+    <section class="card mt-5">
+        <div class="px-4 pt-5 sm:px-5">
+            <h2 class="text-lg font-semibold">Hak Akses & Role</h2>
+            <p class="mt-1 text-sm text-slate-500">Izin yang dimiliki setiap role.</p>
+        </div>
+
+        <div class="mt-4 overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-thead text-xs text-slate-500">
+                    <tr>
+                        <th class="px-5 py-3 font-medium">Role</th>
+                        @foreach ($semuaIzin as $izin)
+                            <th class="px-5 py-3 font-medium">{{ ucfirst($izin->name) }}</th>
+                        @endforeach
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($semuaRole as $role)
+                        <tr class="border-t">
+                            <td class="px-5 py-3 font-medium">{{ $role->name }}</td>
+                            @foreach ($semuaIzin as $izin)
+                                <td class="px-5 py-3">
+                                    @if ($role->permissions->contains($izin))
+                                        <span class="text-won">Ya</span>
+                                    @else
+                                        <span class="text-slate-400">Tidak</span>
+                                    @endif
+                                </td>
+                            @endforeach
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </section>
+
     @foreach ($users as $user)
         {{-- popup konfirmasi reset password --}}
         <div x-show="modal === 'reset-{{ $user->id }}'" x-cloak x-transition.opacity
