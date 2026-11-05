@@ -1,9 +1,20 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FormulirLayananController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+
+// website company profile, bisa dibuka tanpa login
+Route::view('/', 'website.beranda')->name('website.beranda');
+Route::view('/tentang-kami', 'website.tentang-kami')->name('website.tentang-kami');
+Route::view('/layanan', 'website.layanan')->name('website.layanan');
+Route::view('/portofolio', 'website.portofolio')->name('website.portofolio');
+Route::view('/kontak', 'website.kontak')->name('website.kontak');
+Route::get('/permintaan-layanan', [FormulirLayananController::class, 'create'])->name('website.formulir');
+Route::post('/permintaan-layanan', [FormulirLayananController::class, 'submit']);
+Route::view('/permintaan-layanan/terkirim', 'website.konfirmasi')->name('website.konfirmasi');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -11,7 +22,7 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware(['auth', 'wajib-ganti-password'])->group(function () {
-    Route::get('/', function () {
+    Route::get('/crm', function () {
         return redirect()->route(auth()->user()->halamanBeranda());
     })->name('beranda');
 
