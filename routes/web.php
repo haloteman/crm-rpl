@@ -5,6 +5,7 @@ use App\Http\Controllers\DealController;
 use App\Http\Controllers\FollowUpController;
 use App\Http\Controllers\FormulirLayananController;
 use App\Http\Controllers\KonsultasiController;
+use App\Http\Controllers\KonversiController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\RiwayatInteraksiController;
@@ -64,6 +65,7 @@ Route::middleware(['auth', 'wajib-ganti-password'])->group(function () {
         Route::post('/leads/{lead}/konsultasi', [KonsultasiController::class, 'store'])->name('konsultasi.store');
         Route::post('/konsultasi/{konsultasi}/hasil', [KonsultasiController::class, 'updateHasil'])->name('konsultasi.hasil');
         Route::post('/leads/{lead}/deal', [DealController::class, 'tetapkan'])->name('leads.deal');
+        Route::post('/leads/{lead}/konversi', [KonversiController::class, 'konversi'])->name('leads.konversi');
         Route::post('/follow-up/{followUp}/selesai', [FollowUpController::class, 'selesai'])->name('follow-up.selesai');
     });
 

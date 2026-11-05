@@ -11,13 +11,16 @@
 <form method="POST" action="{{ $lead ? route('leads.update', $lead) : route('leads.store') }}" class="card mt-5 grid max-w-2xl gap-5 p-5 sm:p-6">
     @csrf
 
-    @if (session('leadMirip'))
+    @if (session('leadMirip') || session('pelangganMirip'))
         <div class="rounded-lg bg-warn-tint px-4 py-3 text-sm text-warn">
             <div class="font-semibold">Kemungkinan data ganda</div>
-            <p>Nomor HP atau email ini sudah dipakai lead berikut:</p>
+            <p>Nomor HP atau email ini sudah dipakai data berikut:</p>
             <ul class="mt-1 list-disc pl-5">
-                @foreach (session('leadMirip') as $id => $nama)
-                    <li><a href="{{ route('leads.show', $id) }}" target="_blank" class="underline">{{ $nama }}</a></li>
+                @foreach (session('leadMirip', []) as $id => $nama)
+                    <li>Lead: <a href="{{ route('leads.show', $id) }}" target="_blank" class="underline">{{ $nama }}</a></li>
+                @endforeach
+                @foreach (session('pelangganMirip', []) as $id => $nama)
+                    <li>Pelanggan: {{ $nama }}</li>
                 @endforeach
             </ul>
             <p class="mt-2">Tetap simpan data ini?</p>

@@ -85,9 +85,13 @@ class LeadController extends Controller
         $request->validate($aturan, $this->pesanLead());
 
         $leadMirip = DuplicateChecker::cariLeadMirip($request->no_hp, $request->email);
+        $pelangganMirip = DuplicateChecker::cariPelangganMirip($request->no_hp, $request->email);
 
-        if ($leadMirip->isNotEmpty() && ! $request->boolean('tetap_simpan')) {
-            return back()->withInput()->with('leadMirip', $leadMirip->pluck('nama', 'id'));
+        if (($leadMirip->isNotEmpty() || $pelangganMirip->isNotEmpty()) && ! $request->boolean('tetap_simpan')) {
+            return back()->withInput()->with([
+                'leadMirip' => $leadMirip->pluck('nama', 'id'),
+                'pelangganMirip' => $pelangganMirip->pluck('nama', 'id'),
+            ]);
         }
 
         DB::transaction(function () use ($request) {
@@ -118,12 +122,13 @@ class LeadController extends Controller
             $lead->update(['is_baru' => false]);
         }
 
-        $lead->load(['layanans', 'penanggungJawab', 'riwayatInteraksis.pencatat', 'followUps', 'konsultasis']);
+        $lead->load(['layanans', 'penanggungJawab', 'riwayatInteraksis.pencatat', 'followUps', 'konsultasis', 'pelanggan']);
 
         return view('leads.show', [
             'lead' => $lead,
             'statusDiizinkan' => $lead->statusDiizinkan(auth()->user()),
             'semuaAdmin' => User::role(Role::ADMIN)->orderBy('name')->get(),
+            'pelangganSama' => $lead->pelangganSama(),
         ]);
     }
 
@@ -153,9 +158,13 @@ class LeadController extends Controller
 
         if ($kontakBerubah && ! $request->boolean('tetap_simpan')) {
             $leadMirip = DuplicateChecker::cariLeadMirip($request->no_hp, $request->email, $lead->id);
+            $pelangganMirip = DuplicateChecker::cariPelangganMirip($request->no_hp, $request->email);
 
-            if ($leadMirip->isNotEmpty()) {
-                return back()->withInput()->with('leadMirip', $leadMirip->pluck('nama', 'id'));
+            if ($leadMirip->isNotEmpty() || $pelangganMirip->isNotEmpty()) {
+                return back()->withInput()->with([
+                    'leadMirip' => $leadMirip->pluck('nama', 'id'),
+                    'pelangganMirip' => $pelangganMirip->pluck('nama', 'id'),
+                ]);
             }
         }
 

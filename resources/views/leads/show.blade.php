@@ -38,6 +38,9 @@
             <dt class="text-slate-500">Layanan</dt><dd>{{ $lead->layanans->pluck('nama')->implode(', ') }}</dd>
             <dt class="text-slate-500">Tanggal Masuk</dt><dd>{{ $lead->created_at->format('d/m/Y H:i') }}</dd>
             <dt class="text-slate-500">Catatan Kebutuhan</dt><dd class="whitespace-pre-line">{{ $lead->catatan_kebutuhan ?? '—' }}</dd>
+            @if ($lead->pelanggan)
+                <dt class="text-slate-500">Pelanggan</dt><dd>{{ $lead->pelanggan->nama }}</dd>
+            @endif
             @if ($lead->catatan_kesepakatan)
                 <dt class="text-slate-500">Catatan Kesepakatan</dt><dd class="whitespace-pre-line">{{ $lead->catatan_kesepakatan }}</dd>
             @endif
@@ -79,6 +82,44 @@
                     @error('catatan_kesepakatan') <p class="text-sm text-lost">{{ $message }}</p> @enderror
                     @error('deal') <p class="text-sm text-lost">{{ $message }}</p> @enderror
                     <button type="submit" class="btn-primary sm:w-fit">Tetapkan Deal</button>
+                </form>
+            </section>
+        @endif
+
+        @if ($lead->status === 'Deal')
+            <section class="card p-5">
+                <h2 class="text-lg font-semibold">Konversi ke Pelanggan</h2>
+                @if ($pelangganSama->isNotEmpty())
+                    <p class="mt-1 text-sm text-slate-500">Kontak lead sama dengan pelanggan yang sudah ada, jadi lead akan ditautkan ke pelanggan berikut.</p>
+                @else
+                    <p class="mt-1 text-sm text-slate-500">Data pelanggan baru akan dibuat dari data lead ini.</p>
+                @endif
+                @error('konversi') <p class="mt-2 text-sm text-lost">{{ $message }}</p> @enderror
+                <form method="POST" action="{{ route('leads.konversi', $lead) }}" class="mt-3 grid gap-3">
+                    @csrf
+                    @if ($pelangganSama->isNotEmpty())
+                        <select name="pelanggan_id" class="field">
+                            @foreach ($pelangganSama as $pelanggan)
+                                <option value="{{ $pelanggan->id }}">{{ $pelanggan->nama }} ({{ $pelanggan->no_hp ?? $pelanggan->email }})</option>
+                            @endforeach
+                        </select>
+                    @endif
+                    <button type="button" @click="modal = 'konversi'" class="btn-primary sm:w-fit">Konversi</button>
+
+                    {{-- popup konfirmasi konversi --}}
+                    <div x-show="modal === 'konversi'" x-cloak x-transition.opacity
+                         class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 p-4" role="dialog" aria-modal="true">
+                        <div class="flex min-h-full items-center justify-center">
+                            <div class="card w-full max-w-md p-5 sm:p-6" @click.outside="modal = ''">
+                                <h2 class="text-xl font-semibold">Konversi {{ $lead->nama }} jadi pelanggan?</h2>
+                                <p class="mt-1 text-sm text-slate-500">Status lead menjadi Terkonversi dan tidak bisa diubah lagi.</p>
+                                <div class="mt-6 flex flex-col-reverse gap-3 border-t pt-5 sm:flex-row sm:justify-end">
+                                    <button type="button" @click="modal = ''" class="btn-outline">Batal</button>
+                                    <button type="submit" class="btn-primary">Konversi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </section>
         @endif

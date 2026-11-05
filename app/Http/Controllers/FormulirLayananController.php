@@ -70,7 +70,24 @@ class FormulirLayananController extends Controller
 
         try {
             DB::transaction(function () use ($request) {
-                $adaYangMirip = DuplicateChecker::cariLeadMirip($request->no_hp, $request->email)->isNotEmpty();
+                $leadMirip = DuplicateChecker::cariLeadMirip($request->no_hp, $request->email);
+                $pelangganMirip = DuplicateChecker::cariPelangganMirip($request->no_hp, $request->email);
+
+                $penanda = null;
+                $pelangganId = null;
+
+                if ($leadMirip->isNotEmpty() || $pelangganMirip->isNotEmpty()) {
+                    $penanda = 'Kemungkinan Duplikat';
+                }
+
+                if ($request->tipe_pemohon === 'Pelanggan Lama') {
+                    if ($pelangganMirip->isNotEmpty()) {
+                        $penanda = 'Terhubung';
+                        $pelangganId = $pelangganMirip->first()->id;
+                    } else {
+                        $penanda = 'Perlu Verifikasi';
+                    }
+                }
 
                 $lead = Lead::create([
                     'nama' => $request->nama,
@@ -82,7 +99,8 @@ class FormulirLayananController extends Controller
                     'no_hp_normal' => DuplicateChecker::normalkanNoHp($request->no_hp),
                     'catatan_kebutuhan' => $request->pesan,
                     'sumber' => 'Website',
-                    'penanda' => $adaYangMirip ? 'Kemungkinan Duplikat' : null,
+                    'penanda' => $penanda,
+                    'pelanggan_id' => $pelangganId,
                 ]);
 
                 $lead->layanans()->attach($request->layanan);

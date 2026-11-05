@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\DuplicateChecker;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -32,6 +33,7 @@ class Lead extends Model
         'penanda',
         'is_baru',
         'penanggung_jawab_id',
+        'pelanggan_id',
     ];
 
     protected function casts(): array
@@ -52,6 +54,11 @@ class Lead extends Model
         return $this->belongsTo(User::class, 'penanggung_jawab_id')->withTrashed();
     }
 
+    public function pelanggan()
+    {
+        return $this->belongsTo(Pelanggan::class);
+    }
+
     public function riwayatInteraksis()
     {
         return $this->hasMany(RiwayatInteraksi::class)->orderByDesc('waktu')->orderByDesc('id');
@@ -65,6 +72,18 @@ class Lead extends Model
     public function konsultasis()
     {
         return $this->hasMany(Konsultasi::class)->orderBy('tanggal')->orderBy('waktu');
+    }
+
+    // pelanggan yang kontaknya sama, termasuk yang sudah tertaut dari formulir website
+    public function pelangganSama()
+    {
+        $pelanggan = DuplicateChecker::cariPelangganMirip($this->no_hp, $this->email);
+
+        if ($this->pelanggan) {
+            $pelanggan->prepend($this->pelanggan);
+        }
+
+        return $pelanggan->unique('id')->values();
     }
 
     // status yang boleh dipilih dari status sekarang, Deal ditetapkan lewat fitur tersendiri

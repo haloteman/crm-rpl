@@ -10,6 +10,7 @@ class FollowUp extends Model
 
     protected $fillable = [
         'lead_id',
+        'pelanggan_id',
         'tanggal',
         'jenis',
         'catatan_tujuan',

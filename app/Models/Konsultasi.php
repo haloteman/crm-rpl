@@ -10,6 +10,7 @@ class Konsultasi extends Model
 
     protected $fillable = [
         'lead_id',
+        'pelanggan_id',
         'tanggal',
         'waktu',
         'tempat',

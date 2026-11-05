@@ -10,6 +10,7 @@ class RiwayatInteraksi extends Model
 
     protected $fillable = [
         'lead_id',
+        'pelanggan_id',
         'waktu',
         'jenis',
         'kanal',
