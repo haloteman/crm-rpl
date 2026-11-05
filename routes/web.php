@@ -45,7 +45,14 @@ Route::middleware(['auth', 'wajib-ganti-password'])->group(function () {
         ]);
     })->name('dashboard')->middleware('permission:lihat dashboard');
 
-    Route::get('/leads', [LeadController::class, 'index'])->name('leads')->middleware('permission:kelola lead');
+    Route::middleware('permission:kelola lead')->group(function () {
+        Route::get('/leads', [LeadController::class, 'index'])->name('leads');
+        Route::get('/leads/tambah', [LeadController::class, 'create'])->name('leads.create');
+        Route::post('/leads', [LeadController::class, 'store'])->name('leads.store');
+        Route::get('/leads/{lead}/ubah', [LeadController::class, 'edit'])->name('leads.edit');
+        Route::post('/leads/{lead}/ubah', [LeadController::class, 'update'])->name('leads.update');
+        Route::post('/leads/{lead}/hapus', [LeadController::class, 'destroy'])->name('leads.destroy');
+    });
 
     Route::middleware('permission:kelola akun')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');

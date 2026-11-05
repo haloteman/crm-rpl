@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Layanan;
 use App\Models\Lead;
+use App\Services\DuplicateChecker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
@@ -69,14 +70,19 @@ class FormulirLayananController extends Controller
 
         try {
             DB::transaction(function () use ($request) {
+                $adaYangMirip = DuplicateChecker::cariLeadMirip($request->no_hp, $request->email)->isNotEmpty();
+
                 $lead = Lead::create([
                     'nama' => $request->nama,
                     'instansi' => $request->instansi,
                     'tipe_pemohon' => $request->tipe_pemohon,
                     'email' => $request->email,
+                    'email_normal' => DuplicateChecker::normalkanEmail($request->email),
                     'no_hp' => $request->no_hp,
+                    'no_hp_normal' => DuplicateChecker::normalkanNoHp($request->no_hp),
                     'catatan_kebutuhan' => $request->pesan,
                     'sumber' => 'Website',
+                    'penanda' => $adaYangMirip ? 'Kemungkinan Duplikat' : null,
                 ]);
 
                 $lead->layanans()->attach($request->layanan);

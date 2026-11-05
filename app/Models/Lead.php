@@ -10,6 +10,7 @@ class Lead extends Model
     use SoftDeletes;
 
     const SUMBER = ['Instagram', 'WhatsApp', 'Email', 'Website'];
+    const SUMBER_MANUAL = ['Instagram', 'WhatsApp', 'Email'];
     const STATUS = ['Baru', 'Negosiasi', 'Deal', 'Terkonversi', 'Tidak Berlanjut'];
     const TIPE_PEMOHON = ['Calon Pelanggan Baru', 'Pelanggan Lama'];
     const PENANDA = ['Kemungkinan Duplikat', 'Terhubung', 'Perlu Verifikasi'];
