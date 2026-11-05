@@ -38,6 +38,9 @@
             <dt class="text-slate-500">Layanan</dt><dd>{{ $lead->layanans->pluck('nama')->implode(', ') }}</dd>
             <dt class="text-slate-500">Tanggal Masuk</dt><dd>{{ $lead->created_at->format('d/m/Y H:i') }}</dd>
             <dt class="text-slate-500">Catatan Kebutuhan</dt><dd class="whitespace-pre-line">{{ $lead->catatan_kebutuhan ?? '—' }}</dd>
+            @if ($lead->catatan_kesepakatan)
+                <dt class="text-slate-500">Catatan Kesepakatan</dt><dd class="whitespace-pre-line">{{ $lead->catatan_kesepakatan }}</dd>
+            @endif
             @if ($lead->status === 'Tidak Berlanjut')
                 <dt class="text-slate-500">Alasan</dt><dd>{{ $lead->alasan_tidak_berlanjut }}</dd>
             @endif
@@ -66,6 +69,20 @@
             @endif
         </section>
 
+        @if (auth()->user()->hasRole('Owner') && $lead->status === 'Negosiasi')
+            <section class="card p-5">
+                <h2 class="text-lg font-semibold">Tetapkan Deal</h2>
+                <p class="mt-1 text-sm text-slate-500">Syarat: sudah ada minimal satu konsultasi Terlaksana.</p>
+                <form method="POST" action="{{ route('leads.deal', $lead) }}" class="mt-3 grid gap-3">
+                    @csrf
+                    <textarea name="catatan_kesepakatan" rows="2" placeholder="Catatan kesepakatan (opsional)" class="field @error('catatan_kesepakatan') border-lost @enderror">{{ old('catatan_kesepakatan') }}</textarea>
+                    @error('catatan_kesepakatan') <p class="text-sm text-lost">{{ $message }}</p> @enderror
+                    @error('deal') <p class="text-sm text-lost">{{ $message }}</p> @enderror
+                    <button type="submit" class="btn-primary sm:w-fit">Tetapkan Deal</button>
+                </form>
+            </section>
+        @endif
+
         <section class="card p-5">
             <h2 class="text-lg font-semibold">Penanggung Jawab</h2>
             <p class="mt-1 text-sm">{{ $lead->penanggungJawab->name ?? 'Belum ditugaskan' }}</p>
@@ -83,6 +100,61 @@
         </section>
     </div>
 </div>
+
+<section class="card mt-5 p-5">
+    <h2 class="text-lg font-semibold">Konsultasi Tatap Muka</h2>
+    @error('konsultasi') <p class="mt-2 text-sm text-lost">{{ $message }}</p> @enderror
+
+    <ul class="mt-3 divide-y text-sm">
+        @forelse ($lead->konsultasis as $konsultasi)
+            <li class="py-3">
+                <div>
+                    <span class="font-medium">{{ $konsultasi->tanggal->format('d/m/Y') }} pukul {{ substr($konsultasi->waktu, 0, 5) }}</span>
+                    <span class="text-slate-500">· {{ $konsultasi->tempat }} · {{ $konsultasi->status }}</span>
+                </div>
+                @if ($konsultasi->peserta) <div class="text-slate-600">Peserta: {{ $konsultasi->peserta }}</div> @endif
+                @if ($konsultasi->catatan) <div class="text-slate-600">Catatan: {{ $konsultasi->catatan }}</div> @endif
+                @if ($konsultasi->hasil) <div class="whitespace-pre-line">Hasil: {{ $konsultasi->hasil }}</div> @endif
+
+                @if ($konsultasi->status === 'Dijadwalkan')
+                    <form method="POST" action="{{ route('konsultasi.hasil', $konsultasi) }}" class="mt-2 grid gap-2 sm:grid-cols-[180px_1fr_auto]">
+                        @csrf
+                        <input type="hidden" name="konsultasi_id" value="{{ $konsultasi->id }}">
+                        <select name="status_konsultasi" class="field">
+                            <option value="Terlaksana">Terlaksana</option>
+                            <option value="Dibatalkan">Dibatalkan</option>
+                        </select>
+                        <input name="hasil" placeholder="Hasil konsultasi (kosongkan bila dibatalkan)" class="field">
+                        <button type="submit" class="btn-outline">Simpan</button>
+                        @if (old('konsultasi_id') == $konsultasi->id)
+                            @error('status_konsultasi') <p class="text-sm text-lost sm:col-span-3">{{ $message }}</p> @enderror
+                            @error('hasil') <p class="text-sm text-lost sm:col-span-3">{{ $message }}</p> @enderror
+                        @endif
+                    </form>
+                @endif
+            </li>
+        @empty
+            <li class="py-3 text-slate-500">Belum ada konsultasi</li>
+        @endforelse
+    </ul>
+
+    @if ($lead->status === 'Negosiasi')
+        <form method="POST" action="{{ route('konsultasi.store', $lead) }}" class="mt-3 grid gap-3 border-t pt-4 sm:grid-cols-2">
+            @csrf
+            <input type="date" name="tanggal_konsultasi" value="{{ old('tanggal_konsultasi') }}" min="{{ today()->format('Y-m-d') }}" class="field @error('tanggal_konsultasi') border-lost @enderror">
+            <input type="time" name="waktu_konsultasi" value="{{ old('waktu_konsultasi') }}" class="field @error('waktu_konsultasi') border-lost @enderror">
+            <input name="tempat" value="{{ old('tempat') }}" placeholder="Tempat" class="field @error('tempat') border-lost @enderror">
+            <input name="peserta" value="{{ old('peserta', 'Owner, Kepala Staf Design, pelanggan') }}" placeholder="Peserta" class="field @error('peserta') border-lost @enderror">
+            <input name="catatan" value="{{ old('catatan') }}" placeholder="Catatan (opsional)" class="field sm:col-span-2 @error('catatan') border-lost @enderror">
+            @foreach (['tanggal_konsultasi', 'waktu_konsultasi', 'tempat', 'peserta', 'catatan'] as $isian)
+                @error($isian) <p class="text-sm text-lost sm:col-span-2">{{ $message }}</p> @enderror
+            @endforeach
+            <button type="submit" class="btn-primary sm:w-fit">Jadwalkan Konsultasi</button>
+        </form>
+    @else
+        <p class="mt-3 border-t pt-3 text-sm text-slate-500">Konsultasi bisa dijadwalkan saat lead berstatus Negosiasi.</p>
+    @endif
+</section>
 
 <section class="card mt-5 p-5">
     <h2 class="text-lg font-semibold">Follow-up</h2>

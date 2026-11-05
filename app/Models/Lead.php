@@ -62,6 +62,11 @@ class Lead extends Model
         return $this->hasMany(FollowUp::class)->orderBy('tanggal');
     }
 
+    public function konsultasis()
+    {
+        return $this->hasMany(Konsultasi::class)->orderBy('tanggal')->orderBy('waktu');
+    }
+
     // status yang boleh dipilih dari status sekarang, Deal ditetapkan lewat fitur tersendiri
     public function statusDiizinkan($user)
     {

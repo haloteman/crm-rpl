@@ -118,7 +118,7 @@ class LeadController extends Controller
             $lead->update(['is_baru' => false]);
         }
 
-        $lead->load(['layanans', 'penanggungJawab', 'riwayatInteraksis.pencatat', 'followUps']);
+        $lead->load(['layanans', 'penanggungJawab', 'riwayatInteraksis.pencatat', 'followUps', 'konsultasis']);
 
         return view('leads.show', [
             'lead' => $lead,
