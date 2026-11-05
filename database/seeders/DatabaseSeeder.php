@@ -14,10 +14,11 @@ class DatabaseSeeder extends Seeder
     {
         Permission::create(['name' => 'lihat dashboard']);
         Permission::create(['name' => 'kelola akun']);
+        Permission::create(['name' => 'kelola lead']);
 
-        Role::create(['name' => Role::OWNER])->givePermissionTo(['lihat dashboard', 'kelola akun']);
+        Role::create(['name' => Role::OWNER])->givePermissionTo(['lihat dashboard', 'kelola akun', 'kelola lead']);
         Role::create(['name' => Role::SUPER_ADMIN])->givePermissionTo('kelola akun');
-        Role::create(['name' => Role::ADMIN])->givePermissionTo('lihat dashboard');
+        Role::create(['name' => Role::ADMIN])->givePermissionTo(['lihat dashboard', 'kelola lead']);
         Role::create(['name' => Role::KEPALA_STAF_DESIGN])->givePermissionTo('lihat dashboard');
         Role::create(['name' => Role::DESAINER]);
 

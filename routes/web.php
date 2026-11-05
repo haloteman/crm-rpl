@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FormulirLayananController;
+use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +44,8 @@ Route::middleware(['auth', 'wajib-ganti-password'])->group(function () {
             ],
         ]);
     })->name('dashboard')->middleware('permission:lihat dashboard');
+
+    Route::get('/leads', [LeadController::class, 'index'])->name('leads')->middleware('permission:kelola lead');
 
     Route::middleware('permission:kelola akun')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');

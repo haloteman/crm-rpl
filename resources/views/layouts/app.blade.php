@@ -3,7 +3,7 @@
 @php
     $menu = [
         ['route' => 'dashboard',         'label' => 'Dashboard',         'icon' => 'dashboard', 'permission' => 'lihat dashboard'],
-        ['route' => 'leads',             'label' => 'Leads',             'icon' => 'leads'],
+        ['route' => 'leads',             'label' => 'Leads',             'icon' => 'leads', 'permission' => 'kelola lead'],
         ['route' => 'customer',          'label' => 'Customer',          'icon' => 'customer'],
         ['route' => 'penawaran',         'label' => 'Penawaran',         'icon' => 'penawaran'],
         ['route' => 'follow-up',         'label' => 'Follow Up',         'icon' => 'follow-up'],
@@ -15,6 +15,7 @@
     $menu = array_filter($menu, fn ($item) => Route::has($item['route']) && auth()->user()->can($item['permission']));
 
     $me = auth()->user();
+    $jumlahLeadBaru = $me->can('kelola lead') ? \App\Models\Lead::where('is_baru', true)->count() : 0;
     $inisial = collect(preg_split('/\s+/', trim($me->name)))
         ->filter()->take(2)
         ->map(fn ($kata) => mb_strtoupper(mb_substr($kata, 0, 1)))
@@ -41,6 +42,9 @@
                    class="flex h-11 items-center gap-3 rounded-lg px-3 text-[13px] {{ $active ? 'bg-white font-semibold text-brand-dark' : 'font-medium text-white/90 hover:bg-white/10' }}">
                     <x-icon :name="$item['icon']" class="size-5 shrink-0" />
                     <span class="flex-1">{{ $item['label'] }}</span>
+                    @if ($item['route'] === 'leads' && $jumlahLeadBaru > 0)
+                        <span class="rounded-full bg-lost px-2 text-[11px] font-semibold text-white">{{ $jumlahLeadBaru }}</span>
+                    @endif
                     @if ($active) <span class="size-1.5 rounded-full bg-brand-dark"></span> @endif
                 </a>
             @endforeach
