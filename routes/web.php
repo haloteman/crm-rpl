@@ -10,7 +10,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
 });
 
-Route::middleware(['auth', 'wajib-ganti-password', 'akses'])->group(function () {
+Route::middleware(['auth', 'wajib-ganti-password'])->group(function () {
     Route::get('/', function () {
         return redirect()->route(auth()->user()->halamanBeranda());
     })->name('beranda');
@@ -31,10 +31,12 @@ Route::middleware(['auth', 'wajib-ganti-password', 'akses'])->group(function () 
                 'deals_lost' => 0,
             ],
         ]);
-    })->name('dashboard');
+    })->name('dashboard')->middleware('permission:lihat dashboard');
 
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::post('/users', [UserController::class, 'store'])->name('users.store');
-    Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset');
-    Route::post('/users/{user}/hapus', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::middleware('permission:kelola akun')->group(function () {
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::post('/users', [UserController::class, 'store'])->name('users.store');
+        Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset');
+        Route::post('/users/{user}/hapus', [UserController::class, 'destroy'])->name('users.destroy');
+    });
 });

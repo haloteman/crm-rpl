@@ -5,22 +5,20 @@ namespace Database\Seeders;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $roles = [
-            Role::OWNER => 'Pemegang lisensi, kedudukan tertinggi',
-            Role::SUPER_ADMIN => 'Pengelola akun pengguna',
-            Role::ADMIN => 'Mengelola data dan komunikasi pelanggan',
-            Role::KEPALA_STAF_DESIGN => 'Menugaskan proyek ke desainer, mengelola desain dan revisi',
-            Role::DESAINER => 'Mengerjakan proyek yang ditugaskan',
-        ];
+        Permission::create(['name' => 'lihat dashboard']);
+        Permission::create(['name' => 'kelola akun']);
 
-        foreach ($roles as $name => $description) {
-            Role::create(['name' => $name, 'description' => $description]);
-        }
+        Role::create(['name' => Role::OWNER])->givePermissionTo(['lihat dashboard', 'kelola akun']);
+        Role::create(['name' => Role::SUPER_ADMIN])->givePermissionTo('kelola akun');
+        Role::create(['name' => Role::ADMIN])->givePermissionTo('lihat dashboard');
+        Role::create(['name' => Role::KEPALA_STAF_DESIGN])->givePermissionTo('lihat dashboard');
+        Role::create(['name' => Role::DESAINER]);
 
         // akun buat testing, password semua: password123
         $users = [
@@ -32,12 +30,13 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($users as $user) {
-            User::create([
+            $akun = User::create([
                 'name' => $user['name'],
                 'nip' => $user['nip'],
                 'password' => 'password123',
-                'role_id' => Role::where('name', $user['role'])->value('id'),
             ]);
+
+            $akun->assignRole($user['role']);
         }
     }
 }

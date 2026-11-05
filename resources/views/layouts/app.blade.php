@@ -2,17 +2,17 @@
 
 @php
     $menu = [
-        ['route' => 'dashboard',         'label' => 'Dashboard',         'icon' => 'dashboard'],
+        ['route' => 'dashboard',         'label' => 'Dashboard',         'icon' => 'dashboard', 'permission' => 'lihat dashboard'],
         ['route' => 'leads',             'label' => 'Leads',             'icon' => 'leads'],
         ['route' => 'customer',          'label' => 'Customer',          'icon' => 'customer'],
         ['route' => 'penawaran',         'label' => 'Penawaran',         'icon' => 'penawaran'],
         ['route' => 'follow-up',         'label' => 'Follow Up',         'icon' => 'follow-up'],
         ['route' => 'project',           'label' => 'Project',           'icon' => 'folder'],
-        ['route' => 'users.index',       'label' => 'Manajemen Akun',    'icon' => 'user-cog', 'match' => 'users.*'],
+        ['route' => 'users.index',       'label' => 'Manajemen Akun',    'icon' => 'user-cog', 'match' => 'users.*', 'permission' => 'kelola akun'],
         ['route' => 'riwayat-pembelian', 'label' => 'Riwayat pembelian', 'icon' => 'shopping-bag'],
     ];
 
-    $menu = array_filter($menu, fn ($item) => Route::has($item['route']) && auth()->user()->bolehAkses($item['route']));
+    $menu = array_filter($menu, fn ($item) => Route::has($item['route']) && auth()->user()->can($item['permission']));
 
     $me = auth()->user();
     $inisial = collect(preg_split('/\s+/', trim($me->name)))
@@ -82,7 +82,7 @@
                     <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-tint text-xs font-bold text-brand-dark">{{ $inisial }}</span>
                     <span class="hidden sm:block">
                         <span class="block max-w-44 truncate text-sm font-semibold leading-tight">{{ $me->name }}</span>
-                        <span class="mt-0.5 inline-block rounded-md bg-tint px-2 py-0.5 text-[11px] font-medium text-brand-dark">{{ $me->role->name }}</span>
+                        <span class="mt-0.5 inline-block rounded-md bg-tint px-2 py-0.5 text-[11px] font-medium text-brand-dark">{{ $me->getRoleNames()->first() }}</span>
                     </span>
                     <x-icon name="chevron-down" class="size-4 text-slate-500" />
                 </button>
@@ -90,7 +90,7 @@
                      class="absolute right-0 mt-2 w-52 rounded-xl border bg-white p-1.5 shadow-lg">
                     <div class="px-3 py-2 sm:hidden">
                         <div class="truncate text-sm font-semibold">{{ $me->name }}</div>
-                        <div class="text-xs text-slate-500">{{ $me->role->name }}</div>
+                        <div class="text-xs text-slate-500">{{ $me->getRoleNames()->first() }}</div>
                     </div>
                     <a href="{{ route('password.edit') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-thead">
                         <x-icon name="key" class="size-4 text-slate-500" /> Ganti password

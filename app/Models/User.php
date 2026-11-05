@@ -5,16 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use Notifiable, SoftDeletes;
+    use HasRoles, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name',
         'nip',
         'password',
-        'role_id',
         'must_change_password',
         'last_login_at',
     ];
@@ -30,23 +30,6 @@ class User extends Authenticatable
             'last_login_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
-
-    public function hasRole(...$roles)
-    {
-        return in_array($this->role->name, $roles);
-    }
-
-    public function bolehAkses($halaman)
-    {
-        $roleYangBoleh = config('akses')[$halaman] ?? [];
-
-        return in_array($this->role->name, $roleYangBoleh);
     }
 
     public function halamanBeranda()

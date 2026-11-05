@@ -12,7 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'akses' => \App\Http\Middleware\CekAkses::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'wajib-ganti-password' => \App\Http\Middleware\WajibGantiPassword::class,
         ]);
     })

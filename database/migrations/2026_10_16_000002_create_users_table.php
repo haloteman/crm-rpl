@@ -13,7 +13,6 @@ return new class extends Migration
             $table->string('name', 100);
             $table->char('nip', 11)->unique();
             $table->string('password');
-            $table->foreignId('role_id')->constrained('roles');
             $table->timestamp('last_login_at')->nullable();
             $table->timestamps();
             $table->softDeletes();

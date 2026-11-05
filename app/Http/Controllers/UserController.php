@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::with('role')->orderBy('name');
+        $query = User::with('roles')->orderBy('name');
 
         if ($request->filled('cari')) {
             $query->where(function ($q) use ($request) {
@@ -22,7 +22,7 @@ class UserController extends Controller
         }
 
         if ($request->filled('role')) {
-            $query->where('role_id', $request->role);
+            $query->whereRelation('roles', 'roles.id', $request->role);
         }
 
         // biar password sementara nggak kesimpen di cache browser
@@ -54,9 +54,10 @@ class UserController extends Controller
             'name' => $request->name,
             'nip' => CredentialService::generateNip(),
             'password' => $password,
-            'role_id' => $request->role_id,
             'must_change_password' => true,
         ]);
+
+        $user->assignRole(Role::findById($request->role_id));
 
         return redirect()->route('users.index')->with('kredensial', [
             'judul' => 'Akun Berhasil Dibuat',
@@ -100,7 +101,7 @@ class UserController extends Controller
     {
         $pilihan = [Role::ADMIN, Role::KEPALA_STAF_DESIGN, Role::DESAINER];
 
-        $sudahAdaSuperAdmin = User::whereRelation('role', 'name', Role::SUPER_ADMIN)->exists();
+        $sudahAdaSuperAdmin = User::role(Role::SUPER_ADMIN)->exists();
 
         if (auth()->user()->hasRole(Role::OWNER) && ! $sudahAdaSuperAdmin) {
             $pilihan[] = Role::SUPER_ADMIN;

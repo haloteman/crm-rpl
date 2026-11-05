@@ -90,8 +90,8 @@
                         </td>
                         <td class="flex items-center justify-between gap-3 py-1 md:table-cell md:px-5 md:py-3">
                             <span class="text-xs text-slate-500 md:hidden">Role</span>
-                            <span class="rounded-md px-2 py-0.5 text-xs {{ in_array($user->role->name, ['Owner', 'Super Admin']) ? 'bg-tint font-medium text-brand-dark' : 'bg-thead text-slate-500' }}">
-                                {{ $user->role->name }}
+                            <span class="rounded-md px-2 py-0.5 text-xs {{ in_array($user->getRoleNames()->first(), ['Owner', 'Super Admin']) ? 'bg-tint font-medium text-brand-dark' : 'bg-thead text-slate-500' }}">
+                                {{ $user->getRoleNames()->first() }}
                             </span>
                         </td>
                         <td class="flex items-center justify-between gap-3 py-1 text-slate-500 md:table-cell md:px-5 md:py-3">
@@ -153,7 +153,7 @@
                             <div class="font-semibold">{{ $user->name }}</div>
                             <div class="font-mono text-sm text-slate-500">{{ $user->nip }}</div>
                         </div>
-                        <span class="shrink-0 text-xs text-slate-500">{{ $user->role->name }}</span>
+                        <span class="shrink-0 text-xs text-slate-500">{{ $user->getRoleNames()->first() }}</span>
                     </div>
 
                     <div class="mt-4 rounded-lg bg-tint px-4 py-3 text-sm text-brand-dark">
@@ -192,7 +192,7 @@
                             <div class="font-semibold">{{ $user->name }}</div>
                             <div class="font-mono text-sm text-slate-500">{{ $user->nip }}</div>
                         </div>
-                        <span class="shrink-0 text-xs text-slate-500">{{ $user->role->name }}</span>
+                        <span class="shrink-0 text-xs text-slate-500">{{ $user->getRoleNames()->first() }}</span>
                     </div>
 
                     <div class="mt-4 flex items-start gap-3 rounded-lg bg-lost-tint px-4 py-3 text-sm text-lost">
