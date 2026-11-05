@@ -16,8 +16,8 @@
             <div class="font-semibold">Kemungkinan data ganda</div>
             <p>Nomor HP atau email ini sudah dipakai lead berikut:</p>
             <ul class="mt-1 list-disc pl-5">
-                @foreach (session('leadMirip') as $nama)
-                    <li><a href="{{ route('leads', ['cari' => $nama]) }}" target="_blank" class="underline">{{ $nama }}</a></li>
+                @foreach (session('leadMirip') as $id => $nama)
+                    <li><a href="{{ route('leads.show', $id) }}" target="_blank" class="underline">{{ $nama }}</a></li>
                 @endforeach
             </ul>
             <p class="mt-2">Tetap simpan data ini?</p>
@@ -108,7 +108,7 @@
     </div>
 
     <div class="flex flex-col-reverse gap-3 border-t pt-5 sm:flex-row sm:justify-end">
-        <a href="{{ route('leads') }}" class="btn-outline">Batal</a>
+        <a href="{{ $lead ? route('leads.show', $lead) : route('leads') }}" class="btn-outline">Batal</a>
         <button type="submit" class="btn-primary">Simpan</button>
     </div>
 </form>

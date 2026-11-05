@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FollowUpController;
 use App\Http\Controllers\FormulirLayananController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\RiwayatInteraksiController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,9 +51,15 @@ Route::middleware(['auth', 'wajib-ganti-password'])->group(function () {
         Route::get('/leads', [LeadController::class, 'index'])->name('leads');
         Route::get('/leads/tambah', [LeadController::class, 'create'])->name('leads.create');
         Route::post('/leads', [LeadController::class, 'store'])->name('leads.store');
+        Route::get('/leads/{lead}', [LeadController::class, 'show'])->name('leads.show');
         Route::get('/leads/{lead}/ubah', [LeadController::class, 'edit'])->name('leads.edit');
         Route::post('/leads/{lead}/ubah', [LeadController::class, 'update'])->name('leads.update');
         Route::post('/leads/{lead}/hapus', [LeadController::class, 'destroy'])->name('leads.destroy');
+        Route::post('/leads/{lead}/status', [LeadController::class, 'updateStatus'])->name('leads.status');
+        Route::post('/leads/{lead}/penanggung-jawab', [LeadController::class, 'tetapkanPenanggungJawab'])->name('leads.penanggung-jawab');
+        Route::post('/leads/{lead}/interaksi', [RiwayatInteraksiController::class, 'store'])->name('interaksi.store');
+        Route::post('/leads/{lead}/follow-up', [FollowUpController::class, 'store'])->name('follow-up.store');
+        Route::post('/follow-up/{followUp}/selesai', [FollowUpController::class, 'selesai'])->name('follow-up.selesai');
     });
 
     Route::middleware('permission:kelola akun')->group(function () {

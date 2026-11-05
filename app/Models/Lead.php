@@ -51,4 +51,36 @@ class Lead extends Model
         // akun yang sudah dihapus tetap kebaca biar namanya masih tampil
         return $this->belongsTo(User::class, 'penanggung_jawab_id')->withTrashed();
     }
+
+    public function riwayatInteraksis()
+    {
+        return $this->hasMany(RiwayatInteraksi::class)->orderByDesc('waktu')->orderByDesc('id');
+    }
+
+    public function followUps()
+    {
+        return $this->hasMany(FollowUp::class)->orderBy('tanggal');
+    }
+
+    // status yang boleh dipilih dari status sekarang, Deal ditetapkan lewat fitur tersendiri
+    public function statusDiizinkan($user)
+    {
+        if ($this->status === 'Baru') {
+            return ['Negosiasi', 'Tidak Berlanjut'];
+        }
+
+        if ($this->status === 'Negosiasi') {
+            return ['Tidak Berlanjut'];
+        }
+
+        if ($this->status === 'Deal' && $user->hasRole(Role::OWNER)) {
+            return ['Negosiasi', 'Tidak Berlanjut'];
+        }
+
+        if ($this->status === 'Tidak Berlanjut') {
+            return ['Baru', 'Negosiasi'];
+        }
+
+        return [];
+    }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Layanan;
 use App\Models\Lead;
+use App\Models\Role;
+use App\Models\User;
 use App\Services\DuplicateChecker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +16,10 @@ class LeadController extends Controller
     public function index(Request $request)
     {
         $query = Lead::with(['layanans', 'penanggungJawab'])->latest();
+
+        $query->withExists(['followUps as ada_pengingat' => function ($q) {
+            $q->where('selesai', false)->whereDate('tanggal', '<=', today());
+        }]);
 
         if ($request->filled('cari')) {
             $query->where(function ($q) use ($request) {
@@ -81,7 +87,7 @@ class LeadController extends Controller
         $leadMirip = DuplicateChecker::cariLeadMirip($request->no_hp, $request->email);
 
         if ($leadMirip->isNotEmpty() && ! $request->boolean('tetap_simpan')) {
-            return back()->withInput()->with('leadMirip', $leadMirip->pluck('nama'));
+            return back()->withInput()->with('leadMirip', $leadMirip->pluck('nama', 'id'));
         }
 
         DB::transaction(function () use ($request) {
@@ -104,6 +110,21 @@ class LeadController extends Controller
         });
 
         return redirect()->route('leads')->with('status', 'Lead '.$request->nama.' berhasil ditambahkan');
+    }
+
+    public function show(Lead $lead)
+    {
+        if ($lead->is_baru) {
+            $lead->update(['is_baru' => false]);
+        }
+
+        $lead->load(['layanans', 'penanggungJawab', 'riwayatInteraksis.pencatat', 'followUps']);
+
+        return view('leads.show', [
+            'lead' => $lead,
+            'statusDiizinkan' => $lead->statusDiizinkan(auth()->user()),
+            'semuaAdmin' => User::role(Role::ADMIN)->orderBy('name')->get(),
+        ]);
     }
 
     public function edit(Lead $lead)
@@ -134,7 +155,7 @@ class LeadController extends Controller
             $leadMirip = DuplicateChecker::cariLeadMirip($request->no_hp, $request->email, $lead->id);
 
             if ($leadMirip->isNotEmpty()) {
-                return back()->withInput()->with('leadMirip', $leadMirip->pluck('nama'));
+                return back()->withInput()->with('leadMirip', $leadMirip->pluck('nama', 'id'));
             }
         }
 
@@ -154,7 +175,7 @@ class LeadController extends Controller
             $lead->layanans()->sync($request->layanan);
         });
 
-        return redirect()->route('leads')->with('status', 'Data lead '.$lead->nama.' berhasil diubah');
+        return redirect()->route('leads.show', $lead)->with('status', 'Data lead '.$lead->nama.' berhasil diubah');
     }
 
     public function destroy(Lead $lead)
@@ -166,6 +187,75 @@ class LeadController extends Controller
         $lead->delete();
 
         return redirect()->route('leads')->with('status', 'Lead '.$lead->nama.' berhasil dihapus');
+    }
+
+    public function updateStatus(Request $request, Lead $lead)
+    {
+        $statusDiizinkan = $lead->statusDiizinkan(auth()->user());
+
+        $request->validate([
+            'status_baru' => ['required', Rule::in($statusDiizinkan)],
+            'alasan' => 'nullable|required_if:status_baru,Tidak Berlanjut|max:255',
+        ], [
+            'status_baru.required' => 'Status baru wajib dipilih',
+            'status_baru.in' => 'Status tidak sesuai alur. Pilihan yang diizinkan: '.implode(', ', $statusDiizinkan),
+            'alasan.required_if' => 'Alasan wajib diisi untuk status Tidak Berlanjut',
+            'alasan.max' => 'Alasan maksimal 255 karakter',
+        ]);
+
+        $statusLama = $lead->status;
+        $ringkasan = 'Status diubah dari '.$statusLama.' ke '.$request->status_baru;
+        $alasan = null;
+
+        if ($request->status_baru === 'Tidak Berlanjut') {
+            $alasan = $request->alasan;
+            $ringkasan = $ringkasan.'. Alasan: '.$alasan;
+        }
+
+        DB::transaction(function () use ($request, $lead, $statusLama, $ringkasan, $alasan) {
+            $lead->update([
+                'status' => $request->status_baru,
+                'alasan_tidak_berlanjut' => $alasan,
+            ]);
+
+            $lead->riwayatInteraksis()->create([
+                'waktu' => now(),
+                'jenis' => 'Perubahan Status',
+                'ringkasan' => $ringkasan,
+                'status_lama' => $statusLama,
+                'status_baru' => $request->status_baru,
+                'dibuat_oleh' => auth()->id(),
+            ]);
+        });
+
+        return redirect()->route('leads.show', $lead)->with('status', 'Status lead berhasil diubah');
+    }
+
+    public function tetapkanPenanggungJawab(Request $request, Lead $lead)
+    {
+        $semuaAdmin = User::role(Role::ADMIN)->pluck('id');
+
+        $request->validate([
+            'penanggung_jawab_id' => ['required', Rule::in($semuaAdmin)],
+        ], [
+            'penanggung_jawab_id.required' => 'Penanggung jawab wajib dipilih',
+            'penanggung_jawab_id.in' => 'Akun Admin tidak tersedia',
+        ]);
+
+        $admin = User::find($request->penanggung_jawab_id);
+
+        DB::transaction(function () use ($lead, $admin) {
+            $lead->update(['penanggung_jawab_id' => $admin->id]);
+
+            $lead->riwayatInteraksis()->create([
+                'waktu' => now(),
+                'jenis' => 'Penanggung Jawab',
+                'ringkasan' => 'Penanggung jawab ditetapkan ke '.$admin->name,
+                'dibuat_oleh' => auth()->id(),
+            ]);
+        });
+
+        return redirect()->route('leads.show', $lead)->with('status', 'Penanggung jawab berhasil ditetapkan');
     }
 
     private function aturanLead()
