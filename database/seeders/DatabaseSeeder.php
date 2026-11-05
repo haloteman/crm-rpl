@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Layanan;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -37,6 +38,12 @@ class DatabaseSeeder extends Seeder
             ]);
 
             $akun->assignRole($user['role']);
+        }
+
+        $layanans = ['Desain Logo', 'Desain Kaos', 'Editing Video', 'Editing Foto', 'Poster', 'Banner', 'Flyer'];
+
+        foreach ($layanans as $nama) {
+            Layanan::create(['nama' => $nama]);
         }
     }
 }
