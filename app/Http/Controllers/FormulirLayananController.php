@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Layanan;
 use App\Models\Lead;
+use App\Rules\NomorHp;
 use App\Services\DuplicateChecker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -28,13 +29,7 @@ class FormulirLayananController extends Controller
             'layanan' => 'required|array',
             'layanan.*' => 'exists:layanans,id',
             'email' => 'nullable|required_without:no_hp|email|max:255',
-            'no_hp' => ['bail', 'nullable', 'required_without:email', 'regex:/^\+?[0-9 \-]+$/', function ($attribute, $value, $fail) {
-                $jumlahAngka = strlen(preg_replace('/[^0-9]/', '', $value));
-
-                if ($jumlahAngka < 9 || $jumlahAngka > 15) {
-                    $fail('Nomor HP harus 9 sampai 15 angka');
-                }
-            }],
+            'no_hp' => ['bail', 'nullable', 'required_without:email', new NomorHp],
             'pesan' => 'nullable|max:1000',
         ], [
             'nama.required' => 'Nama wajib diisi',
@@ -49,7 +44,6 @@ class FormulirLayananController extends Controller
             'email.email' => 'Format email tidak valid',
             'email.max' => 'Email terlalu panjang',
             'no_hp.required_without' => 'Isi email atau nomor HP',
-            'no_hp.regex' => 'Nomor HP hanya boleh berisi angka, spasi, tanda hubung, dan awalan +',
             'pesan.max' => 'Pesan maksimal 1.000 karakter',
         ]);
 

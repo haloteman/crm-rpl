@@ -30,4 +30,14 @@ class Pelanggan extends Model
     {
         return $this->hasMany(Lead::class);
     }
+
+    public function riwayatInteraksis()
+    {
+        return $this->hasMany(RiwayatInteraksi::class)->orderByDesc('waktu')->orderByDesc('id');
+    }
+
+    public function followUps()
+    {
+        return $this->hasMany(FollowUp::class)->orderBy('tanggal');
+    }
 }

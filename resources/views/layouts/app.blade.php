@@ -3,8 +3,8 @@
 @php
     $menu = [
         ['route' => 'dashboard',         'label' => 'Dashboard',         'icon' => 'dashboard', 'permission' => 'lihat dashboard'],
-        ['route' => 'leads',             'label' => 'Leads',             'icon' => 'leads', 'permission' => 'kelola lead'],
-        ['route' => 'customer',          'label' => 'Customer',          'icon' => 'customer'],
+        ['route' => 'leads',             'label' => 'Leads',             'icon' => 'leads', 'match' => 'leads*', 'permission' => 'kelola lead'],
+        ['route' => 'customer',          'label' => 'Customer',          'icon' => 'customer', 'match' => 'customer*', 'permission' => 'kelola lead'],
         ['route' => 'penawaran',         'label' => 'Penawaran',         'icon' => 'penawaran'],
         ['route' => 'follow-up',         'label' => 'Follow Up',         'icon' => 'follow-up'],
         ['route' => 'project',           'label' => 'Project',           'icon' => 'folder'],

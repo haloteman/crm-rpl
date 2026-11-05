@@ -39,7 +39,7 @@
             <dt class="text-slate-500">Tanggal Masuk</dt><dd>{{ $lead->created_at->format('d/m/Y H:i') }}</dd>
             <dt class="text-slate-500">Catatan Kebutuhan</dt><dd class="whitespace-pre-line">{{ $lead->catatan_kebutuhan ?? '—' }}</dd>
             @if ($lead->pelanggan)
-                <dt class="text-slate-500">Pelanggan</dt><dd>{{ $lead->pelanggan->nama }}</dd>
+                <dt class="text-slate-500">Pelanggan</dt><dd><a href="{{ route('customer.show', $lead->pelanggan) }}" class="text-brand-dark hover:underline">{{ $lead->pelanggan->nama }}</a></dd>
             @endif
             @if ($lead->catatan_kesepakatan)
                 <dt class="text-slate-500">Catatan Kesepakatan</dt><dd class="whitespace-pre-line">{{ $lead->catatan_kesepakatan }}</dd>

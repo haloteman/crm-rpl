@@ -6,6 +6,7 @@ use App\Models\Layanan;
 use App\Models\Lead;
 use App\Models\Role;
 use App\Models\User;
+use App\Rules\NomorHp;
 use App\Services\DuplicateChecker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -273,13 +274,7 @@ class LeadController extends Controller
             'nama' => 'required|max:100',
             'instansi' => 'nullable|max:100',
             'tipe_pemohon' => ['required', Rule::in(Lead::TIPE_PEMOHON)],
-            'no_hp' => ['bail', 'nullable', 'required_without_all:email,instagram', 'regex:/^\+?[0-9 \-]+$/', function ($attribute, $value, $fail) {
-                $jumlahAngka = strlen(preg_replace('/[^0-9]/', '', $value));
-
-                if ($jumlahAngka < 9 || $jumlahAngka > 15) {
-                    $fail('Nomor HP harus 9 sampai 15 angka');
-                }
-            }],
+            'no_hp' => ['bail', 'nullable', 'required_without_all:email,instagram', new NomorHp],
             'email' => 'nullable|email|max:255',
             'instagram' => 'nullable|max:100',
             'layanan' => 'required|array',
@@ -297,7 +292,6 @@ class LeadController extends Controller
             'tipe_pemohon.required' => 'Tipe pemohon wajib dipilih',
             'tipe_pemohon.in' => 'Tipe pemohon tidak tersedia',
             'no_hp.required_without_all' => 'Isi minimal satu kontak: nomor HP, email, atau Instagram',
-            'no_hp.regex' => 'Nomor HP hanya boleh berisi angka, spasi, tanda hubung, dan awalan +',
             'email.email' => 'Format email tidak valid',
             'email.max' => 'Email terlalu panjang',
             'instagram.max' => 'Instagram maksimal 100 karakter',

@@ -20,7 +20,7 @@
                     <li>Lead: <a href="{{ route('leads.show', $id) }}" target="_blank" class="underline">{{ $nama }}</a></li>
                 @endforeach
                 @foreach (session('pelangganMirip', []) as $id => $nama)
-                    <li>Pelanggan: {{ $nama }}</li>
+                    <li>Pelanggan: <a href="{{ route('customer.show', $id) }}" target="_blank" class="underline">{{ $nama }}</a></li>
                 @endforeach
             </ul>
             <p class="mt-2">Tetap simpan data ini?</p>

@@ -8,6 +8,7 @@ use App\Http\Controllers\KonsultasiController;
 use App\Http\Controllers\KonversiController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\RiwayatInteraksiController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -66,6 +67,12 @@ Route::middleware(['auth', 'wajib-ganti-password'])->group(function () {
         Route::post('/konsultasi/{konsultasi}/hasil', [KonsultasiController::class, 'updateHasil'])->name('konsultasi.hasil');
         Route::post('/leads/{lead}/deal', [DealController::class, 'tetapkan'])->name('leads.deal');
         Route::post('/leads/{lead}/konversi', [KonversiController::class, 'konversi'])->name('leads.konversi');
+        Route::get('/customer', [PelangganController::class, 'index'])->name('customer');
+        Route::get('/customer/{pelanggan}', [PelangganController::class, 'show'])->name('customer.show');
+        Route::get('/customer/{pelanggan}/ubah', [PelangganController::class, 'edit'])->name('customer.edit');
+        Route::post('/customer/{pelanggan}/ubah', [PelangganController::class, 'update'])->name('customer.update');
+        Route::post('/customer/{pelanggan}/interaksi', [RiwayatInteraksiController::class, 'storePelanggan'])->name('customer.interaksi');
+        Route::post('/customer/{pelanggan}/follow-up', [FollowUpController::class, 'storePelanggan'])->name('customer.follow-up');
         Route::post('/follow-up/{followUp}/selesai', [FollowUpController::class, 'selesai'])->name('follow-up.selesai');
     });
 

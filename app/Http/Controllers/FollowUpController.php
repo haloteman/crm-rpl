@@ -4,12 +4,42 @@ namespace App\Http\Controllers;
 
 use App\Models\FollowUp;
 use App\Models\Lead;
+use App\Models\Pelanggan;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class FollowUpController extends Controller
 {
     public function store(Request $request, Lead $lead)
+    {
+        $this->validasi($request);
+
+        $lead->followUps()->create([
+            'pelanggan_id' => $lead->pelanggan_id,
+            'tanggal' => $request->tanggal,
+            'jenis' => $request->jenis,
+            'catatan_tujuan' => $request->catatan_tujuan,
+            'dibuat_oleh' => auth()->id(),
+        ]);
+
+        return redirect()->route('leads.show', $lead)->with('status', 'Follow-up berhasil dijadwalkan');
+    }
+
+    public function storePelanggan(Request $request, Pelanggan $pelanggan)
+    {
+        $this->validasi($request);
+
+        $pelanggan->followUps()->create([
+            'tanggal' => $request->tanggal,
+            'jenis' => $request->jenis,
+            'catatan_tujuan' => $request->catatan_tujuan,
+            'dibuat_oleh' => auth()->id(),
+        ]);
+
+        return redirect()->route('customer.show', $pelanggan)->with('status', 'Follow-up berhasil dijadwalkan');
+    }
+
+    private function validasi(Request $request)
     {
         $request->validate([
             'tanggal' => 'required|date|after_or_equal:today',
@@ -23,15 +53,6 @@ class FollowUpController extends Controller
             'jenis.in' => 'Jenis follow-up tidak tersedia',
             'catatan_tujuan.max' => 'Catatan tujuan maksimal 1.000 karakter',
         ]);
-
-        $lead->followUps()->create([
-            'tanggal' => $request->tanggal,
-            'jenis' => $request->jenis,
-            'catatan_tujuan' => $request->catatan_tujuan,
-            'dibuat_oleh' => auth()->id(),
-        ]);
-
-        return redirect()->route('leads.show', $lead)->with('status', 'Follow-up berhasil dijadwalkan');
     }
 
     public function selesai(FollowUp $followUp)
@@ -41,6 +62,6 @@ class FollowUpController extends Controller
             'selesai_pada' => now(),
         ]);
 
-        return redirect()->route('leads.show', $followUp->lead_id)->with('status', 'Follow-up ditandai selesai');
+        return back()->with('status', 'Follow-up ditandai selesai');
     }
 }
