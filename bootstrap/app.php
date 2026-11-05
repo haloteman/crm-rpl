@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'wajib-ganti-password' => \App\Http\Middleware\WajibGantiPassword::class,
         ]);
+
+        // user yang sudah login lalu buka /login diarahkan ke beranda sesuai role
+        $middleware->redirectUsersTo(fn () => route('beranda'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
