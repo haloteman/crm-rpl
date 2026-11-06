@@ -3,19 +3,31 @@
 @section('heading', 'Manajemen Akun')
 
 @section('content')
-<div x-data="{ modal: '{{ $errors->any() ? 'tambah' : (session('kredensial') ? 'kredensial' : '') }}' }"
+<div x-data="{ tab: 'pengguna', modal: '{{ $errors->any() ? 'tambah' : (session('kredensial') ? 'kredensial' : '') }}' }"
      @keydown.escape.window="if (modal !== 'kredensial') modal = ''">
 
     {{-- judul + tombol tambah --}}
     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-            <h1 class="text-[28px] font-bold leading-tight">Manajemen Akun</h1>
-            <p class="mt-1 text-sm text-slate-500">Kelola akun dan akses pengguna internal PT TipeCreative.</p>
+            <h1 class="page-title">Manajemen Akun</h1>
+            <p class="page-sub">Kelola akun dan akses pengguna internal PT TipeCreative.</p>
         </div>
         <button type="button" @click="modal = 'tambah'" class="btn-primary w-full sm:w-auto">
             <x-icon name="user-plus" class="size-5" /> Tambah Akun
         </button>
     </div>
+
+    {{-- tab --}}
+    <div class="mt-5 flex gap-6 border-b text-[13px] font-semibold" role="tablist">
+        <button type="button" role="tab" @click="tab = 'pengguna'"
+                :class="tab === 'pengguna' ? 'border-brand-dark text-brand-dark' : 'border-transparent text-slate-500 hover:text-ink'"
+                class="-mb-px border-b-2 px-1 pb-3">Daftar Pengguna</button>
+        <button type="button" role="tab" @click="tab = 'role'"
+                :class="tab === 'role' ? 'border-brand-dark text-brand-dark' : 'border-transparent text-slate-500 hover:text-ink'"
+                class="-mb-px border-b-2 px-1 pb-3">Hak Akses &amp; Role</button>
+    </div>
+
+    <div x-show="tab === 'pengguna'">
 
     {{-- total akun + info --}}
     <div class="mt-5 flex flex-col gap-4 md:flex-row">
@@ -129,33 +141,37 @@
 
     <p class="mt-4 text-xs text-slate-500">Akun yang sudah dihapus tidak ditampilkan. Password tidak ditampilkan dalam daftar pengguna.</p>
 
+    </div>
+
     {{-- hak akses tiap role, cuma untuk dilihat --}}
-    <section class="card mt-5">
+    <section x-show="tab === 'role'" x-cloak class="card mt-5">
         <div class="px-4 pt-5 sm:px-5">
-            <h2 class="text-lg font-semibold">Hak Akses & Role</h2>
-            <p class="mt-1 text-sm text-slate-500">Izin yang dimiliki setiap role.</p>
+            <h2 class="text-base font-semibold">Hak Akses &amp; Role</h2>
+            <p class="mt-1 text-[13px] text-slate-500">Izin yang dimiliki setiap role.</p>
         </div>
 
         <div class="mt-4 overflow-x-auto">
-            <table class="w-full text-left text-sm">
-                <thead class="bg-thead text-xs text-slate-500">
+            <table class="w-full min-w-[480px] text-left text-xs">
+                <thead class="bg-thead text-[11px] text-slate-500">
                     <tr>
-                        <th class="px-5 py-3 font-medium">Role</th>
+                        <th class="px-[18px] py-2.5 font-medium">Role</th>
                         @foreach ($semuaIzin as $izin)
-                            <th class="px-5 py-3 font-medium">{{ ucfirst($izin->name) }}</th>
+                            <th class="px-[18px] py-2.5 text-center font-medium">{{ ucfirst($izin->name) }}</th>
                         @endforeach
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($semuaRole as $role)
                         <tr class="border-t">
-                            <td class="px-5 py-3 font-medium">{{ $role->name }}</td>
+                            <td class="px-[18px] py-3 text-[13px] font-medium">{{ $role->name }}</td>
                             @foreach ($semuaIzin as $izin)
-                                <td class="px-5 py-3">
+                                <td class="px-[18px] py-3 text-center">
                                     @if ($role->permissions->contains($izin))
-                                        <span class="text-won">Ya</span>
+                                        <x-icon name="check" class="mx-auto size-4 text-won" />
+                                        <span class="sr-only">Ya</span>
                                     @else
-                                        <span class="text-slate-400">Tidak</span>
+                                        <span class="text-slate-300">—</span>
+                                        <span class="sr-only">Tidak</span>
                                     @endif
                                 </td>
                             @endforeach
@@ -244,7 +260,7 @@
                     <form method="POST" action="{{ route('users.destroy', $user) }}" class="mt-6 flex flex-col-reverse gap-3 border-t pt-5 sm:flex-row sm:justify-end">
                         @csrf
                         <button type="button" @click="modal = ''" class="btn-outline">Batal</button>
-                        <button type="submit" class="btn-primary bg-lost hover:bg-red-700">
+                        <button type="submit" class="btn-danger">
                             <x-icon name="trash" class="size-4" /> Hapus Akun
                         </button>
                     </form>
@@ -361,10 +377,8 @@
                         </div>
                     </div>
 
-                    <p class="mt-5 text-sm text-slate-500">Serahkan kredensial melalui saluran internal yang aman, hanya kepada pengguna yang bersangkutan.</p>
-                    <p class="mt-1 text-sm font-medium">Pengguna wajib mengganti password saat login berikutnya.</p>
-
-                    <div class="mt-6 flex justify-end border-t pt-5">
+                    <p class="mt-5 text-sm
+                                        <div class="mt-6 flex justify-end border-t pt-5">
                         <button type="button" @click="modal = ''" class="btn-primary w-full sm:w-auto">
                             <x-icon name="check" class="size-5" /> Selesai
                         </button>

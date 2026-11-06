@@ -1,11 +1,21 @@
 @extends('layouts.app')
 @section('title', 'Tidak Ada Akses')
+@section('heading', 'Tidak Ada Akses')
 
 @section('content')
-<div class="card mx-auto mt-10 max-w-md p-8 text-center">
-    <x-icon name="info" class="mx-auto size-12 text-slate-400" />
-    <h2 class="mt-4 text-xl font-semibold">Kamu tidak punya akses ke halaman ini</h2>
-    <p class="mt-2 text-slate-500">Halaman ini bukan untuk role kamu.</p>
-    <a href="{{ route('beranda') }}" class="mt-6 inline-block rounded-full bg-brand px-6 py-2.5 font-semibold text-white hover:bg-brand-dark">Kembali ke beranda</a>
+<div class="mx-auto mt-6 max-w-md sm:mt-12">
+    <div class="card p-6 text-center sm:p-8">
+        <div class="mx-auto flex size-16 items-center justify-center rounded-2xl bg-lost-tint text-lost">
+            <x-icon name="shield-check" class="size-8" />
+        </div>
+        <p class="eyebrow mt-6">Akses Ditolak</p>
+        <h1 class="mt-1 text-xl font-semibold sm:text-2xl">Kamu tidak punya akses ke halaman ini</h1>
+        <p class="mt-3 text-[13px] text-slate-500">Halaman ini bukan untuk role kamu. Kembali ke beranda untuk melanjutkan aktivitas di CRM.</p>
+
+        <div class="mt-6 border-t pt-6">
+            <a href="{{ route('beranda') }}" class="btn-primary w-full">Kembali ke beranda</a>
+        </div>
+    </div>
+    <p class="mt-4 text-center text-xs text-slate-500">Butuh bantuan? Hubungi administrator perusahaan.</p>
 </div>
 @endsection
