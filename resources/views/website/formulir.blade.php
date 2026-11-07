@@ -1,94 +1,150 @@
 @extends('layouts.website')
 @section('title', 'Formulir Permintaan Layanan')
 
+@php
+    $alur = [
+        ['Form Intake', 'Data yang Anda isikan tercatat di sistem tim kreatif.'],
+        ['Discovery & Moodboard', 'Tim meninjau referensi dan menghubungi Anda.'],
+        ['Produksi Eksklusif', 'Eksekusi desain, apparel, video, atau cetak sesuai brief.'],
+        ['Handover Final', 'Hasil akhir diserahkan dalam format siap pakai.'],
+    ];
+@endphp
+
 @section('content')
-<section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-16">
-    <p class="eyebrow">Mulai Berkolaborasi</p>
-    <h1 class="mt-2 text-[28px] font-bold leading-tight sm:text-4xl">Formulir Permintaan Layanan</h1>
-    <p class="mt-3 text-[15px] text-slate-600">Pilih layanan yang Anda minati dan bagikan kebutuhan kreatif Anda. Tidak perlu membuat akun.</p>
+<section class="w-hero overflow-hidden">
+    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 md:py-20 lg:px-8">
+        <span class="w-eyebrow"><span class="size-1.5 rounded-full bg-lime"></span> Mulai berkolaborasi</span>
+        <h1 class="w-display mt-6 max-w-3xl">Mulai Kolaborasi Kreatif Bersama <span class="text-lime">TipeCreative</span></h1>
+        <p class="mt-5 max-w-xl text-[15px] leading-7 text-white/70">Pilih layanan yang Anda minati dan bagikan kebutuhan kreatif Anda. Tidak perlu membuat akun.</p>
+    </div>
+</section>
 
-    @error('formulir')
-        <div class="mt-6 rounded-lg bg-lost-tint px-4 py-3 text-[13px] text-lost" role="alert">{{ $message }}</div>
-    @enderror
+<section class="bg-paper">
+    <div class="mx-auto grid max-w-7xl items-start gap-6 px-4 py-12 sm:px-6 md:py-16 lg:grid-cols-[1fr_340px] lg:px-8">
 
-    <form method="POST" action="{{ route('website.formulir') }}" novalidate class="card mt-8 p-5 sm:p-8">
-        @csrf
+        <div>
+            @error('formulir')
+                <div class="mb-5 rounded-2xl bg-lost-tint px-5 py-4 text-sm font-medium text-lost" role="alert">{{ $message }}</div>
+            @enderror
 
-        {{-- kolom jebakan bot, jangan dihapus --}}
-        <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden">
+            <form method="POST" action="{{ route('website.formulir') }}" novalidate class="w-card p-6 shadow-sm sm:p-9">
+                @csrf
 
-        <div class="grid gap-5 sm:grid-cols-2">
-            <div>
-                <label for="nama" class="text-xs font-semibold">Nama *</label>
-                <input id="nama" name="nama" value="{{ old('nama') }}" placeholder="Masukkan nama Anda"
-                       class="field mt-1.5 @error('nama') border-lost @enderror">
-                @error('nama') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label for="instansi" class="text-xs font-semibold">Asal/Instansi (opsional)</label>
-                <input id="instansi" name="instansi" value="{{ old('instansi') }}" placeholder="Nama instansi atau komunitas"
-                       class="field mt-1.5 @error('instansi') border-lost @enderror">
-                @error('instansi') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
-            </div>
+                {{-- kolom jebakan bot, jangan dihapus --}}
+                <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden">
+
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                    <div>
+                        <div class="text-[10px] font-extrabold uppercase tracking-[0.08em] text-olive">Formulir permintaan layanan</div>
+                        <h2 class="mt-1 text-2xl font-extrabold tracking-tight">Ceritakan kebutuhan Anda</h2>
+                    </div>
+                    <span class="text-[11px] text-slate-500"><span class="text-lost">*</span> Tanda bintang wajib diisi</span>
+                </div>
+
+                <div class="mt-7 grid gap-5 sm:grid-cols-2">
+                    <div>
+                        <label for="nama" class="text-xs font-bold">1. Nama Lengkap <span class="text-lost">*</span></label>
+                        <input id="nama" name="nama" value="{{ old('nama') }}" placeholder="Masukkan nama Anda"
+                               class="w-input mt-2 @error('nama') !border-lost @enderror">
+                        @error('nama') <p class="mt-1.5 text-xs text-lost">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label for="instansi" class="text-xs font-bold">2. Asal/Instansi <span class="font-normal text-slate-400">(opsional)</span></label>
+                        <input id="instansi" name="instansi" value="{{ old('instansi') }}" placeholder="Nama instansi atau komunitas"
+                               class="w-input mt-2 @error('instansi') !border-lost @enderror">
+                        @error('instansi') <p class="mt-1.5 text-xs text-lost">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <p class="text-xs font-bold">3. Status Pemohon <span class="text-lost">*</span></p>
+                    <div class="mt-2 grid gap-3 sm:grid-cols-2">
+                        @foreach (\App\Models\Lead::TIPE_PEMOHON as $tipe)
+                            <label class="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-forest/10 bg-[#f5f7f6] px-5 py-4 text-sm font-bold transition has-[:checked]:border-moss has-[:checked]:bg-[#d3e3de]">
+                                {{ $tipe }}
+                                <input type="radio" name="tipe_pemohon" value="{{ $tipe }}" class="size-5 accent-moss" @checked(old('tipe_pemohon') === $tipe)>
+                            </label>
+                        @endforeach
+                    </div>
+                    @error('tipe_pemohon') <p class="mt-1.5 text-xs text-lost">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="mt-6">
+                    <p class="text-xs font-bold">4. Layanan yang Diminati <span class="text-lost">*</span></p>
+                    <p class="text-[11px] text-slate-500">Pilih minimal satu. Boleh lebih dari satu layanan.</p>
+                    <div class="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
+                        @foreach ($layanans as $layanan)
+                            <label class="flex cursor-pointer items-end justify-between gap-2 rounded-2xl border border-forest/10 bg-[#f5f7f6] px-4 pb-3.5 pt-6 text-[13px] font-bold transition has-[:checked]:border-moss has-[:checked]:bg-lime">
+                                {{ $layanan->nama }}
+                                <input type="checkbox" name="layanan[]" value="{{ $layanan->id }}" class="size-4 shrink-0 accent-moss" @checked(in_array($layanan->id, old('layanan', [])))>
+                            </label>
+                        @endforeach
+                    </div>
+                    @error('layanan') <p class="mt-1.5 text-xs text-lost">{{ $message }}</p> @enderror
+                    @error('layanan.*') <p class="mt-1.5 text-xs text-lost">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="mt-7 rounded-2xl bg-mist px-5 py-4 text-xs text-slate-600">
+                    Isi <strong>email atau nomor HP</strong>, minimal salah satu, agar tim kami bisa menghubungi Anda.
+                </div>
+
+                <div class="mt-4 grid gap-5 sm:grid-cols-2">
+                    <div>
+                        <label for="email" class="text-xs font-bold">5. Alamat Email</label>
+                        <input id="email" name="email" type="email" value="{{ old('email') }}" placeholder="nama@example.com"
+                               class="w-input mt-2 @error('email') !border-lost @enderror">
+                        @error('email') <p class="mt-1.5 text-xs text-lost">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label for="no_hp" class="text-xs font-bold">6. Nomor HP / WhatsApp</label>
+                        <input id="no_hp" name="no_hp" type="tel" value="{{ old('no_hp') }}" placeholder="Contoh: 08xxxxxxxxxx"
+                               class="w-input mt-2 @error('no_hp') !border-lost @enderror">
+                        @error('no_hp') <p class="mt-1.5 text-xs text-lost">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <label for="pesan" class="text-xs font-bold">7. Pesan Kebutuhan <span class="font-normal text-slate-400">(opsional)</span></label>
+                    <textarea id="pesan" name="pesan" rows="4" placeholder="Ceritakan tujuan, ide, atau kebutuhan visual Anda."
+                              class="w-input mt-2 @error('pesan') !border-lost @enderror">{{ old('pesan') }}</textarea>
+                    @error('pesan') <p class="mt-1.5 text-xs text-lost">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="mt-7 flex flex-col gap-4 border-t border-forest/5 pt-6 sm:flex-row sm:items-center sm:justify-between">
+                    <p class="text-[11px] text-slate-500 sm:max-w-xs">Data Anda hanya kami pakai untuk menghubungi Anda terkait permintaan layanan ini.</p>
+                    <button type="submit" class="w-btn-lime">Kirim Permintaan Layanan <x-icon name="arrow-right" class="size-4" /></button>
+                </div>
+            </form>
         </div>
 
-        <div class="mt-5">
-            <p class="text-xs font-semibold">Status Pemohon *</p>
-            <div class="mt-1.5 grid gap-2 sm:grid-cols-2">
-                @foreach (\App\Models\Lead::TIPE_PEMOHON as $tipe)
-                    <label class="flex cursor-pointer items-center gap-3 rounded-lg border bg-white px-4 py-2.5 text-[13px] has-[:checked]:border-brand-dark has-[:checked]:bg-tint">
-                        <input type="radio" name="tipe_pemohon" value="{{ $tipe }}" class="size-4 accent-brand-dark" @checked(old('tipe_pemohon') === $tipe)>
-                        {{ $tipe }}
-                    </label>
-                @endforeach
+        {{-- samping --}}
+        <aside class="grid gap-5">
+            <div class="w-card p-6">
+                <div class="flex size-11 items-center justify-center rounded-full bg-[#caf1e7] text-moss"><x-icon name="shield-check" class="size-5" /></div>
+                <h3 class="mt-4 text-base font-extrabold">Tanpa perlu login</h3>
+                <p class="mt-1.5 text-[13px] leading-6 text-slate-500">Isi formulir ini langsung, tanpa membuat akun. Permintaan Anda diterima oleh tim kami.</p>
             </div>
-            @error('tipe_pemohon') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
-        </div>
-
-        <div class="mt-5">
-            <p class="text-xs font-semibold">Layanan yang diminati *</p>
-            <p class="text-[11px] text-slate-500">Pilih minimal satu. Boleh lebih dari satu layanan.</p>
-            <div class="mt-2 grid gap-2 sm:grid-cols-2">
-                @foreach ($layanans as $layanan)
-                    <label class="flex cursor-pointer items-center gap-3 rounded-lg border bg-white px-4 py-2.5 text-[13px] has-[:checked]:border-brand-dark has-[:checked]:bg-tint">
-                        <input type="checkbox" name="layanan[]" value="{{ $layanan->id }}" class="size-4 accent-brand-dark" @checked(in_array($layanan->id, old('layanan', [])))>
-                        {{ $layanan->nama }}
-                    </label>
-                @endforeach
+            <div class="rounded-3xl bg-forest p-6 text-white">
+                <div class="text-[10px] font-extrabold uppercase tracking-[0.08em] text-lime">Butuh jawaban cepat?</div>
+                <p class="mt-2 text-[13px] leading-6 text-white/70">Lihat halaman kontak untuk jalur komunikasi lainnya.</p>
+                <a href="{{ route('website.kontak') }}" class="w-btn-ghost mt-4 w-full !py-3">Halaman Kontak</a>
             </div>
-            @error('layanan') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
-            @error('layanan.*') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
-        </div>
+        </aside>
+    </div>
+</section>
 
-        <hr class="my-6">
-
-        <p class="text-[13px] text-slate-500">Isi email atau nomor HP, minimal salah satu.</p>
-
-        <div class="mt-3 grid gap-5 sm:grid-cols-2">
-            <div>
-                <label for="email" class="text-xs font-semibold">Email</label>
-                <input id="email" name="email" type="email" value="{{ old('email') }}" placeholder="nama@example.com"
-                       class="field mt-1.5 @error('email') border-lost @enderror">
-                @error('email') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label for="no_hp" class="text-xs font-semibold">Nomor HP</label>
-                <input id="no_hp" name="no_hp" type="tel" value="{{ old('no_hp') }}" placeholder="Contoh: 08xxxxxxxxxx"
-                       class="field mt-1.5 @error('no_hp') border-lost @enderror">
-                @error('no_hp') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
-            </div>
-        </div>
-
-        <div class="mt-5">
-            <label for="pesan" class="text-xs font-semibold">Pesan kebutuhan (opsional)</label>
-            <textarea id="pesan" name="pesan" rows="4" placeholder="Ceritakan tujuan, ide, atau kebutuhan visual Anda."
-                      class="field mt-1.5 @error('pesan') border-lost @enderror">{{ old('pesan') }}</textarea>
-            @error('pesan') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
-        </div>
-
-        <p class="mt-6 text-[11px] text-slate-500">Data Anda hanya kami pakai untuk menghubungi Anda terkait permintaan layanan ini.</p>
-
-        <button type="submit" class="btn-primary mt-4 w-full sm:w-auto">Kirim Permintaan Layanan</button>
-    </form>
+<section class="bg-mist">
+    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 md:py-20 lg:px-8">
+        <h2 class="w-h2 text-center">Bagaimana Kami Memproses Ide Anda</h2>
+        <ol class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            @foreach ($alur as $i => [$judul, $isi])
+                <li class="w-card p-6">
+                    <span class="flex size-9 items-center justify-center rounded-full bg-mist text-xs font-extrabold">0{{ $i + 1 }}</span>
+                    <div class="mt-4 text-sm font-extrabold">{{ $judul }}</div>
+                    <p class="mt-1.5 text-[13px] leading-6 text-slate-500">{{ $isi }}</p>
+                </li>
+            @endforeach
+        </ol>
+    </div>
 </section>
 @endsection

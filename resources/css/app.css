@@ -10,14 +10,15 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
     --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-    --color-brand: #1247b2;
-    --color-brand-dark: #235ad9;
+    /* nama lama dipertahankan supaya kode lama tetap jalan */
+    --color-brand: #1247b2;       /* sidebar + latar login */
+    --color-brand-dark: #235ad9;  /* tombol utama, link, aksen biru */
 
-    --color-canvas: #f5f7fb;
-    --color-thead: #f8fafd;
-    --color-tint: #edf3ff;
-    --color-ink: #172b4d;
-    --color-line: #e3e9f2;
+    --color-canvas: #f5f7fb;      /* latar halaman */
+    --color-thead: #f8fafd;       /* header tabel, kotak info netral */
+    --color-tint: #edf3ff;        /* latar biru muda (badge, banner, avatar) */
+    --color-ink: #172b4d;         /* teks utama / judul */
+    --color-line: #e3e9f2;        /* garis & border */
 
     --color-won: #168165;
     --color-won-tint: #eaf7f1;
@@ -25,18 +26,30 @@
     --color-warn-tint: #fff5e3;
     --color-lost: #c63741;
     --color-lost-tint: #fff0f1;
+
+    /* warna khusus website company profile */
+    --color-forest: #0d1b18;      /* latar hero + footer gelap */
+    --color-moss: #1f423b;        /* hijau tua pendamping */
+    --color-lime: #d2f824;        /* aksen utama / tombol */
+    --color-olive: #546500;       /* teks hijau di latar terang */
+    --color-paper: #f8faf7;       /* latar halaman website */
+    --color-mist: #f2f4f2;        /* latar section selang-seling */
+    --color-sage: #8e9e98;        /* teks redup di latar gelap */
 }
 
 [x-cloak] { display: none !important; }
 
 @layer base {
+    /* Tailwind v4: border default-nya hitam, samakan dengan garis Figma */
     *, ::after, ::before, ::backdrop, ::file-selector-button { border-color: var(--color-line); }
+
     body { @apply bg-canvas text-ink antialiased; }
 }
 
 @layer components {
     .card { @apply rounded-xl border bg-white; }
 
+    /* ukuran sesuai Figma: tinggi input/tombol 40px, teks 13px */
     .field { @apply w-full rounded-lg border bg-white px-3.5 py-[9px] text-[13px] text-ink outline-none placeholder:text-slate-400 focus:border-brand-dark focus:ring-2 focus:ring-brand-dark/20; }
 
     .btn-primary { @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-dark px-3.5 py-2.5 text-[13px] font-semibold text-white hover:bg-brand disabled:opacity-60; }
@@ -59,4 +72,28 @@
 
     .pager-btn { @apply inline-flex size-[30px] items-center justify-center rounded-lg border text-xs text-slate-500 hover:bg-thead; }
     .pager-btn-active { @apply border-transparent bg-tint font-semibold text-brand-dark hover:bg-tint; }
+
+    /* ===== website company profile ===== */
+    .w-font { font-family: 'Plus Jakarta Sans', var(--font-sans); }
+
+    .w-hero { background: radial-gradient(ellipse 70% 80% at 85% 0%, rgb(31 66 59 / .75), transparent 65%), var(--color-forest); @apply text-white; }
+    .w-glow { background: radial-gradient(ellipse 80% 120% at 100% 100%, rgb(31 66 59 / .9), transparent 70%), var(--color-forest); @apply text-white; }
+
+    .w-display { @apply text-[34px] font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-[56px] lg:leading-[1.08]; }
+    .w-h2 { @apply text-[26px] font-extrabold leading-tight tracking-tight sm:text-[38px]; }
+
+    .w-eyebrow { @apply inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-lime; }
+    .w-eyebrow-light { @apply inline-flex items-center gap-2 rounded-full bg-moss/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-moss; }
+
+    .w-btn-lime { @apply inline-flex items-center justify-center gap-2 rounded-full bg-lime px-7 py-3.5 text-sm font-bold text-forest transition hover:shadow-lg hover:brightness-105; }
+    .w-btn-ghost { @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-7 py-3.5 text-sm font-bold text-white transition hover:bg-white/20; }
+    .w-btn-dark { @apply inline-flex items-center justify-center gap-2 rounded-full bg-forest px-7 py-3.5 text-sm font-bold text-white transition hover:bg-moss; }
+    .w-btn-line { @apply inline-flex items-center justify-center gap-2 rounded-full border border-forest/15 bg-white px-7 py-3.5 text-sm font-bold text-forest transition hover:bg-mist; }
+
+    .w-card { @apply rounded-3xl border border-forest/10 bg-white; }
+    .w-chip { @apply inline-flex items-center rounded-full border border-forest/10 px-4 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-mist; }
+    .w-chip-on { @apply border-forest bg-forest text-white hover:bg-forest; }
+
+    .w-input { @apply h-[52px] w-full rounded-xl border border-[#e2e6e4] bg-[#f5f7f6] px-4 text-sm text-forest outline-none placeholder:text-slate-400 focus:border-moss focus:ring-4 focus:ring-moss/10; }
+    textarea.w-input { @apply h-auto py-3.5; }
 }

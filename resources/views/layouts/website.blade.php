@@ -8,39 +8,46 @@
         ['route' => 'website.portofolio', 'label' => 'Portofolio'],
         ['route' => 'website.kontak', 'label' => 'Kontak'],
     ];
+
+    $layananFooter = ['Desain Logo & Identitas Brand', 'Desain Kaos & Apparel', 'Editing Video', 'Editing Foto', 'Poster, Banner & Flyer'];
 @endphp
 
 @section('body')
-<div class="flex min-h-screen flex-col bg-white" x-data="{ menu: false }" @keydown.escape.window="menu = false">
-    <header class="sticky top-0 z-40 border-b bg-white/95 backdrop-blur">
-        <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-            <a href="{{ route('website.beranda') }}" class="flex items-center gap-2.5 text-[15px] font-bold">
-                <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand-dark"><svg viewBox="0 0 24 24" class="size-5" fill="none" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5V8h-5.25v11h-3.5V8H4V5.5Z" fill="#fff" /></svg></span>
-                <span>PT TipeCreative</span>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<div class="w-font flex min-h-screen flex-col bg-paper text-forest" x-data="{ menu: false }" @keydown.escape.window="menu = false">
+
+    {{-- header --}}
+    <header class="sticky top-0 z-40 border-b border-forest/5 bg-paper/85 backdrop-blur-xl">
+        <div class="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+            <a href="{{ route('website.beranda') }}" class="flex items-center gap-1 text-[22px] font-extrabold tracking-tight">
+                TipeCreative<span class="mb-3 size-2 rounded-full bg-lime ring-2 ring-forest/10"></span>
             </a>
 
-            <nav class="hidden items-center gap-7 text-[13px] font-medium md:flex">
+            <nav class="hidden items-center gap-1 text-[13px] font-semibold lg:flex">
                 @foreach ($menu as $item)
                     <a href="{{ route($item['route']) }}"
-                       class="{{ request()->routeIs($item['route']) ? 'text-brand-dark' : 'text-slate-600 hover:text-brand-dark' }}">{{ $item['label'] }}</a>
+                       class="rounded-full px-4 py-2 transition {{ request()->routeIs($item['route']) ? 'bg-[#d3e3de] text-forest' : 'text-slate-600 hover:text-forest' }}">{{ $item['label'] }}</a>
                 @endforeach
             </nav>
 
-            <a href="{{ route('website.formulir') }}" class="btn-primary hidden md:inline-flex">Ajukan Permintaan Layanan</a>
+            <a href="{{ route('website.formulir') }}" class="w-btn-lime hidden !px-5 !py-2.5 !text-[13px] lg:inline-flex">
+                Ajukan Permintaan <x-icon name="arrow-up-right" class="size-4" />
+            </a>
 
             <button type="button" @click="menu = ! menu" :aria-expanded="menu" aria-label="Buka menu"
-                    class="flex size-10 items-center justify-center rounded-lg border md:hidden">
+                    class="flex size-11 items-center justify-center rounded-full border border-forest/10 bg-white lg:hidden">
                 <x-icon name="menu" class="size-5" x-show="! menu" />
                 <x-icon name="x-mark" class="size-5" x-show="menu" x-cloak />
             </button>
         </div>
 
-        <nav x-show="menu" x-cloak class="flex flex-col gap-1 border-t px-4 py-3 text-sm md:hidden">
+        <nav x-show="menu" x-cloak x-transition.opacity class="flex flex-col gap-1 border-t border-forest/5 px-4 pb-4 pt-3 text-sm font-semibold lg:hidden">
             @foreach ($menu as $item)
                 <a href="{{ route($item['route']) }}"
-                   class="rounded-lg px-3 py-2.5 {{ request()->routeIs($item['route']) ? 'bg-tint font-semibold text-brand-dark' : 'text-slate-600' }}">{{ $item['label'] }}</a>
+                   class="rounded-xl px-4 py-3 {{ request()->routeIs($item['route']) ? 'bg-[#d3e3de]' : 'text-slate-600' }}">{{ $item['label'] }}</a>
             @endforeach
-            <a href="{{ route('website.formulir') }}" class="btn-primary mt-2">Ajukan Permintaan Layanan</a>
+            <a href="{{ route('website.formulir') }}" class="w-btn-lime mt-2">Ajukan Permintaan Layanan</a>
         </nav>
     </header>
 
@@ -48,30 +55,45 @@
         @yield('content')
     </main>
 
-    <footer class="bg-brand text-sm text-white/80">
-        <div class="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
+    {{-- footer --}}
+    <footer class="border-t border-forest/5 bg-paper">
+        <div class="mx-auto grid max-w-7xl gap-10 px-4 pb-10 pt-14 sm:px-6 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.3fr] lg:px-8">
             <div>
-                <div class="flex items-center gap-2.5 text-base font-bold text-white">
-                    <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/15"><svg viewBox="0 0 24 24" class="size-5" fill="none" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5V8h-5.25v11h-3.5V8H4V5.5Z" fill="#fff" /></svg></span> PT TipeCreative
-                </div>
-                <p class="mt-3 max-w-sm text-[13px]">Jasa media kreatif untuk mengolah gagasan menjadi komunikasi visual yang bermakna.</p>
+                <a href="{{ route('website.beranda') }}" class="flex items-center gap-1 text-[22px] font-extrabold tracking-tight">
+                    TipeCreative<span class="mb-3 size-2 rounded-full bg-lime ring-2 ring-forest/10"></span>
+                </a>
+                <p class="mt-4 max-w-sm text-[13px] leading-6 text-slate-500">PT TipeCreative adalah agensi produksi media kreatif terdepan yang berfokus pada desain identitas visual, produksi apparel, kampanye sinematik, dan strategi cetak modern untuk meningkatkan nilai brand.</p>
             </div>
+
             <div>
-                <div class="text-[13px] font-semibold text-white">Jelajahi</div>
-                @foreach ($menu as $item)
-                    <a href="{{ route($item['route']) }}" class="mt-2.5 block text-[13px] hover:text-white">{{ $item['label'] }}</a>
-                @endforeach
+                <div class="text-sm font-extrabold">Layanan Unggulan</div>
+                <ul class="mt-4 space-y-2.5 text-[13px] text-slate-500">
+                    @foreach ($layananFooter as $nama)
+                        <li><a href="{{ route('website.layanan') }}" class="hover:text-forest">{{ $nama }}</a></li>
+                    @endforeach
+                </ul>
             </div>
+
             <div>
-                <div class="text-[13px] font-semibold text-white">Kontak</div>
-                <p class="mt-2.5 flex items-center gap-2 text-[13px]"><x-icon name="envelope" class="size-4 shrink-0" /> Email belum diisi</p>
-                <p class="mt-2.5 flex items-center gap-2 text-[13px]"><x-icon name="phone" class="size-4 shrink-0" /> WhatsApp belum diisi</p>
-                <p class="mt-2.5 flex items-center gap-2 text-[13px]"><x-icon name="map-pin" class="size-4 shrink-0" /> Alamat belum diisi</p>
+                <div class="text-sm font-extrabold">Tautan Cepat</div>
+                <ul class="mt-4 space-y-2.5 text-[13px] text-slate-500">
+                    @foreach ($menu as $item)
+                        <li><a href="{{ route($item['route']) }}" class="hover:text-forest">{{ $item['label'] }}</a></li>
+                    @endforeach
+
+                </ul>
+            </div>
+
+            <div>
+                <div class="text-sm font-extrabold">Kontak Studio</div>
+                <ul class="mt-4 space-y-3 text-[13px] text-slate-500">
+                    <li class="flex items-start gap-2.5"><x-icon name="map-pin" class="mt-0.5 size-4 shrink-0 text-moss" /> Alamat belum diisi</li>
+                    <li class="flex items-start gap-2.5"><x-icon name="envelope" class="mt-0.5 size-4 shrink-0 text-moss" /> Email belum diisi</li>
+                    <li class="flex items-start gap-2.5"><x-icon name="phone" class="mt-0.5 size-4 shrink-0 text-moss" /> WhatsApp belum diisi</li>
+                </ul>
             </div>
         </div>
-        <div class="border-t border-white/15 px-4 py-4 text-center text-xs">
-            &copy; {{ date('Y') }} PT TipeCreative. Seluruh hak cipta dilindungi.
-        </div>
+
     </footer>
 </div>
 @endsection
