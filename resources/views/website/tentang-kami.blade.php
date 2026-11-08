@@ -24,6 +24,18 @@
     </div>
 </section>
 
+<section class="bg-paper">
+    <div class="mx-auto grid max-w-7xl gap-4 px-4 py-12 sm:grid-cols-3 sm:px-6 lg:px-8">
+        @foreach ([['tentang-1', 'foto'], ['tentang-2', 'video'], ['tentang-3', 'poster']] as [$berkas, $jenis])
+            <div class="aspect-[4/3] overflow-hidden rounded-3xl border border-forest/10">
+                <x-media :nama="$berkas" :video="$jenis === 'video'" alt="Suasana studio PT TipeCreative">
+                    <x-ilustrasi :jenis="$jenis" class="size-full" />
+                </x-media>
+            </div>
+        @endforeach
+    </div>
+</section>
+
 <section class="bg-white">
     <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8">
         <div class="mx-auto max-w-2xl text-center">

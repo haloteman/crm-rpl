@@ -96,4 +96,12 @@
 
     .w-input { @apply h-[52px] w-full rounded-xl border border-[#e2e6e4] bg-[#f5f7f6] px-4 text-sm text-forest outline-none placeholder:text-slate-400 focus:border-moss focus:ring-4 focus:ring-moss/10; }
     textarea.w-input { @apply h-auto py-3.5; }
+    
+/* ilustrasi + animasi website */
+@keyframes w-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes w-ping { 0% { transform: scale(1); opacity: .5; } 100% { transform: scale(1.7); opacity: 0; } }
+.w-art { background: radial-gradient(ellipse 80% 90% at 90% 0%, rgb(210 248 36 / .12), transparent 55%), linear-gradient(140deg, #1f423b, #0d1b18); }
+.w-float { animation: w-float 6s ease-in-out infinite; }
+.w-ping { animation: w-ping 2s ease-out infinite; }
+@media (prefers-reduced-motion: reduce) { .w-float, .w-ping { animation: none; } }
 }

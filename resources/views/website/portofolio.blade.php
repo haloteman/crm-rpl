@@ -2,7 +2,7 @@
 @section('title', 'Portofolio')
 
 @php
-    $kategori = ['Desain Logo', 'Desain Kaos', 'Editing Video', 'Editing Foto', 'Poster & Flyer', 'Banner'];
+    $kategori = [['Desain Logo', 'logo'], ['Desain Kaos', 'kaos'], ['Editing Video', 'video'], ['Editing Foto', 'foto'], ['Poster & Flyer', 'poster'], ['Banner', 'banner']];
 @endphp
 
 @section('content')
@@ -22,7 +22,7 @@
     <div class="border-b border-forest/5">
         <div class="mx-auto flex max-w-7xl gap-2 overflow-x-auto px-4 py-4 sm:px-6 lg:px-8">
             <button type="button" @click="pilih = 'semua'" :class="pilih === 'semua' ? 'w-chip-on' : ''" class="w-chip shrink-0">Semua ({{ count($kategori) }})</button>
-            @foreach ($kategori as $nama)
+            @foreach ($kategori as [$nama])
                 <button type="button" @click="pilih = @js($nama)" :class="pilih === @js($nama) ? 'w-chip-on' : ''" class="w-chip shrink-0">{{ $nama }}</button>
             @endforeach
         </div>
@@ -30,10 +30,13 @@
 
     <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            @foreach ($kategori as $nama)
+            @foreach ($kategori as [$nama, $jenis])
                 <div x-show="pilih === 'semua' || pilih === @js($nama)" class="w-card overflow-hidden">
-                    <div class="flex h-48 items-start bg-gradient-to-br from-moss to-forest p-4">
-                        <span class="rounded-full bg-forest/60 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-lime">{{ $nama }}</span>
+                    <div class="relative h-56">
+                        <x-media :nama="'portofolio-'.$jenis" :video="$jenis === 'video'" kontrol :alt="$nama">
+                            <x-ilustrasi :jenis="$jenis" class="h-56 w-full" />
+                        </x-media>
+                        <span class="pointer-events-none absolute left-4 top-4 rounded-full bg-forest/70 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-lime backdrop-blur">{{ $nama }}</span>
                     </div>
                     <div class="p-5">
                         <div class="text-sm font-bold">Karya belum diisi</div>
