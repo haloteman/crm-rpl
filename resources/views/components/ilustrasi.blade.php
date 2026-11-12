@@ -1,5 +1,5 @@
 @props(['jenis' => 'logo'])
-<div {{ $attributes->merge(['class' => 'w-art relative overflow-hidden']) }} aria-hidden="true">
+<div {{ $attributes->merge(['class' => 'relative overflow-hidden bg-[radial-gradient(ellipse_80%_90%_at_90%_0%,rgb(198_146_66/.18),transparent_55%),linear-gradient(140deg,#0f1c3f,#0b1426)]']) }} aria-hidden="true">
     <svg viewBox="0 0 400 260" class="absolute inset-0 size-full" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
             <pattern id="titik-{{ $jenis }}" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#fff" fill-opacity=".08" /></pattern>

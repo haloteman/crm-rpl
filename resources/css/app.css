@@ -8,6 +8,8 @@
 @theme {
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    --font-jakarta: 'Plus Jakarta Sans', var(--font-sans);
     --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
     /* nama lama dipertahankan supaya kode lama tetap jalan */
@@ -27,14 +29,19 @@
     --color-lost: #c63741;
     --color-lost-tint: #fff0f1;
 
-    /* warna khusus website company profile */
-    --color-forest: #0d1b18;      /* latar hero + footer gelap */
-    --color-moss: #1f423b;        /* hijau tua pendamping */
-    --color-lime: #d2f824;        /* aksen utama / tombol */
-    --color-olive: #546500;       /* teks hijau di latar terang */
-    --color-paper: #f8faf7;       /* latar halaman website */
-    --color-mist: #f2f4f2;        /* latar section selang-seling */
-    --color-sage: #8e9e98;        /* teks redup di latar gelap */
+    /* warna khusus website company profile (tema Aura Prestige: navy + emas).
+       forest = navy tua, moss = navy pendamping, lime = emas aksen, olive = emas tua untuk teks di latar terang */
+    --color-forest: #0b1426;
+    --color-moss: #0f1c3f;
+    --color-lime: #c69242;
+    --color-olive: #805605;
+    --color-paper: #f8fafd;
+    --color-mist: #f2f4f7;
+    --color-sage: #94a3b8;
+
+    /* animasi kartu mengambang di hero website */
+    --animate-float: float 6s ease-in-out infinite;
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 }
 
 [x-cloak] { display: none !important; }
@@ -72,36 +79,4 @@
 
     .pager-btn { @apply inline-flex size-[30px] items-center justify-center rounded-lg border text-xs text-slate-500 hover:bg-thead; }
     .pager-btn-active { @apply border-transparent bg-tint font-semibold text-brand-dark hover:bg-tint; }
-
-    /* ===== website company profile ===== */
-    .w-font { font-family: 'Plus Jakarta Sans', var(--font-sans); }
-
-    .w-hero { background: radial-gradient(ellipse 70% 80% at 85% 0%, rgb(31 66 59 / .75), transparent 65%), var(--color-forest); @apply text-white; }
-    .w-glow { background: radial-gradient(ellipse 80% 120% at 100% 100%, rgb(31 66 59 / .9), transparent 70%), var(--color-forest); @apply text-white; }
-
-    .w-display { @apply text-[34px] font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-[56px] lg:leading-[1.08]; }
-    .w-h2 { @apply text-[26px] font-extrabold leading-tight tracking-tight sm:text-[38px]; }
-
-    .w-eyebrow { @apply inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-lime; }
-    .w-eyebrow-light { @apply inline-flex items-center gap-2 rounded-full bg-moss/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-moss; }
-
-    .w-btn-lime { @apply inline-flex items-center justify-center gap-2 rounded-full bg-lime px-7 py-3.5 text-sm font-bold text-forest transition hover:shadow-lg hover:brightness-105; }
-    .w-btn-ghost { @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-7 py-3.5 text-sm font-bold text-white transition hover:bg-white/20; }
-    .w-btn-dark { @apply inline-flex items-center justify-center gap-2 rounded-full bg-forest px-7 py-3.5 text-sm font-bold text-white transition hover:bg-moss; }
-    .w-btn-line { @apply inline-flex items-center justify-center gap-2 rounded-full border border-forest/15 bg-white px-7 py-3.5 text-sm font-bold text-forest transition hover:bg-mist; }
-
-    .w-card { @apply rounded-3xl border border-forest/10 bg-white; }
-    .w-chip { @apply inline-flex items-center rounded-full border border-forest/10 px-4 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-mist; }
-    .w-chip-on { @apply border-forest bg-forest text-white hover:bg-forest; }
-
-    .w-input { @apply h-[52px] w-full rounded-xl border border-[#e2e6e4] bg-[#f5f7f6] px-4 text-sm text-forest outline-none placeholder:text-slate-400 focus:border-moss focus:ring-4 focus:ring-moss/10; }
-    textarea.w-input { @apply h-auto py-3.5; }
-    
-/* ilustrasi + animasi website */
-@keyframes w-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-@keyframes w-ping { 0% { transform: scale(1); opacity: .5; } 100% { transform: scale(1.7); opacity: 0; } }
-.w-art { background: radial-gradient(ellipse 80% 90% at 90% 0%, rgb(210 248 36 / .12), transparent 55%), linear-gradient(140deg, #1f423b, #0d1b18); }
-.w-float { animation: w-float 6s ease-in-out infinite; }
-.w-ping { animation: w-ping 2s ease-out infinite; }
-@media (prefers-reduced-motion: reduce) { .w-float, .w-ping { animation: none; } }
 }
