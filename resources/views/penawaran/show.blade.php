@@ -136,4 +136,98 @@
         @endif
     </div>
 </div>
+
+@if ($penawaran->status === 'Disetujui')
+    @php $kesepakatan = $penawaran->kesepakatan; @endphp
+    <section class="card mt-5 p-5">
+        <h2 class="text-base font-semibold">Kesepakatan</h2>
+        @error('kesepakatan') <p class="mt-2 rounded-lg bg-lost-tint px-3 py-2 text-xs text-lost">{{ $message }}</p> @enderror
+
+        @if ($kesepakatan)
+            <dl class="mt-4 grid gap-4 text-[13px] sm:grid-cols-2">
+                <div>
+                    <dt class="text-xs text-slate-500">Nilai Kesepakatan</dt>
+                    <dd>Rp{{ number_format($kesepakatan->nilai_kesepakatan, 0, ',', '.') }}</dd>
+                </div>
+                <div>
+                    <dt class="text-xs text-slate-500">Tanggal Kesepakatan</dt>
+                    <dd>{{ $kesepakatan->tanggal_kesepakatan->format('d/m/Y') }}</dd>
+                </div>
+                <div>
+                    <dt class="text-xs text-slate-500">Masa Kontrak</dt>
+                    <dd>
+                        @if ($kesepakatan->masa_kontrak_mulai || $kesepakatan->masa_kontrak_selesai)
+                            {{ $kesepakatan->masa_kontrak_mulai?->format('d/m/Y') ?? '—' }} s.d. {{ $kesepakatan->masa_kontrak_selesai?->format('d/m/Y') ?? '—' }}
+                        @else
+                            —
+                        @endif
+                    </dd>
+                </div>
+                <div>
+                    <dt class="text-xs text-slate-500">Frekuensi Update Progres</dt>
+                    <dd>{{ $kesepakatan->frekuensi_update_progres ?: '—' }}</dd>
+                </div>
+                <div class="sm:col-span-2">
+                    <dt class="text-xs text-slate-500">Ketentuan Pekerjaan</dt>
+                    <dd class="whitespace-pre-line">{{ $kesepakatan->ketentuan_pekerjaan }}</dd>
+                </div>
+            </dl>
+            <p class="mt-4 text-xs text-slate-500">
+                Dicatat oleh {{ $kesepakatan->pembuat->name }}, {{ $kesepakatan->created_at->format('d/m/Y H:i') }}
+                @if ($kesepakatan->pengubah)
+                    · Diubah oleh {{ $kesepakatan->pengubah->name }}, {{ $kesepakatan->updated_at->format('d/m/Y H:i') }}
+                @endif
+            </p>
+        @endif
+
+        @if (! $kesepakatan || $kesepakatan->pembayarans->isEmpty())
+            <form method="POST" action="{{ $kesepakatan ? route('kesepakatan.update', $kesepakatan) : route('kesepakatan.store', $penawaran) }}"
+                  class="mt-4 grid gap-4 border-t pt-4 sm:grid-cols-2">
+                @csrf
+                <h3 class="text-sm font-semibold sm:col-span-2">{{ $kesepakatan ? 'Ubah kesepakatan' : 'Catat kesepakatan' }}</h3>
+                <div>
+                    <span class="text-xs font-semibold">Nilai Kesepakatan</span>
+                    <p class="mt-1.5 text-[13px]">Rp{{ number_format($penawaran->harga_akhir, 0, ',', '.') }} <span class="text-slate-500">(sama dengan harga akhir)</span></p>
+                </div>
+                <div>
+                    <label for="tanggal_kesepakatan" class="text-xs font-semibold">Tanggal Kesepakatan</label>
+                    <input id="tanggal_kesepakatan" name="tanggal_kesepakatan" type="date" max="{{ today()->format('Y-m-d') }}"
+                           value="{{ old('tanggal_kesepakatan', $kesepakatan?->tanggal_kesepakatan->format('Y-m-d')) }}"
+                           class="field mt-1.5 @error('tanggal_kesepakatan') border-lost @enderror">
+                    @error('tanggal_kesepakatan') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
+                </div>
+                <div class="sm:col-span-2">
+                    <label for="ketentuan_pekerjaan" class="text-xs font-semibold">Ketentuan Pekerjaan</label>
+                    <textarea id="ketentuan_pekerjaan" name="ketentuan_pekerjaan" rows="3" placeholder="Ruang lingkup, jumlah revisi, jadwal, dan lainnya"
+                              class="field mt-1.5 @error('ketentuan_pekerjaan') border-lost @enderror">{{ old('ketentuan_pekerjaan', $kesepakatan->ketentuan_pekerjaan ?? '') }}</textarea>
+                    @error('ketentuan_pekerjaan') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label for="masa_kontrak_mulai" class="text-xs font-semibold">Masa Kontrak Mulai (opsional)</label>
+                    <input id="masa_kontrak_mulai" name="masa_kontrak_mulai" type="date"
+                           value="{{ old('masa_kontrak_mulai', $kesepakatan?->masa_kontrak_mulai?->format('Y-m-d')) }}"
+                           class="field mt-1.5 @error('masa_kontrak_mulai') border-lost @enderror">
+                    @error('masa_kontrak_mulai') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label for="masa_kontrak_selesai" class="text-xs font-semibold">Masa Kontrak Selesai (opsional)</label>
+                    <input id="masa_kontrak_selesai" name="masa_kontrak_selesai" type="date"
+                           value="{{ old('masa_kontrak_selesai', $kesepakatan?->masa_kontrak_selesai?->format('Y-m-d')) }}"
+                           class="field mt-1.5 @error('masa_kontrak_selesai') border-lost @enderror">
+                    @error('masa_kontrak_selesai') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label for="frekuensi_update_progres" class="text-xs font-semibold">Frekuensi Update Progres (opsional)</label>
+                    <input id="frekuensi_update_progres" name="frekuensi_update_progres" placeholder="Contoh: setiap 3 hari"
+                           value="{{ old('frekuensi_update_progres', $kesepakatan->frekuensi_update_progres ?? '') }}"
+                           class="field mt-1.5 @error('frekuensi_update_progres') border-lost @enderror">
+                    @error('frekuensi_update_progres') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
+                </div>
+                <div class="sm:col-span-2">
+                    <button type="submit" class="btn-primary">{{ $kesepakatan ? 'Simpan Perubahan' : 'Catat Kesepakatan' }}</button>
+                </div>
+            </form>
+        @endif
+    </section>
+@endif
 @endsection

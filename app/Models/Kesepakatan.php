@@ -35,6 +35,16 @@ class Kesepakatan extends Model
         return $this->belongsTo(Penawaran::class);
     }
 
+    public function pembuat()
+    {
+        return $this->belongsTo(User::class, 'dibuat_oleh')->withTrashed();
+    }
+
+    public function pengubah()
+    {
+        return $this->belongsTo(User::class, 'diubah_oleh')->withTrashed();
+    }
+
     public function pembayarans()
     {
         return $this->hasMany(Pembayaran::class)->orderBy('tanggal_bayar')->orderBy('id');
