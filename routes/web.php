@@ -4,12 +4,18 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\FollowUpController;
 use App\Http\Controllers\FormulirLayananController;
+use App\Http\Controllers\KeputusanPenawaranController;
+use App\Http\Controllers\KesepakatanController;
 use App\Http\Controllers\KonsultasiController;
 use App\Http\Controllers\KonversiController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\PenawaranController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RiwayatInteraksiController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -61,6 +67,7 @@ Route::middleware(['auth', 'wajib-ganti-password'])->group(function () {
         Route::post('/leads/{lead}/hapus', [LeadController::class, 'destroy'])->name('leads.destroy');
         Route::post('/leads/{lead}/status', [LeadController::class, 'updateStatus'])->name('leads.status');
         Route::post('/leads/{lead}/penanggung-jawab', [LeadController::class, 'tetapkanPenanggungJawab'])->name('leads.penanggung-jawab');
+        Route::post('/leads/{lead}/ambil', [LeadController::class, 'ambil'])->name('leads.ambil');
         Route::post('/leads/{lead}/interaksi', [RiwayatInteraksiController::class, 'store'])->name('interaksi.store');
         Route::post('/leads/{lead}/follow-up', [FollowUpController::class, 'store'])->name('follow-up.store');
         Route::post('/leads/{lead}/konsultasi', [KonsultasiController::class, 'store'])->name('konsultasi.store');
@@ -76,10 +83,28 @@ Route::middleware(['auth', 'wajib-ganti-password'])->group(function () {
         Route::post('/follow-up/{followUp}/selesai', [FollowUpController::class, 'selesai'])->name('follow-up.selesai');
     });
 
+    Route::middleware('permission:kelola penawaran')->group(function () {
+        Route::get('/penawaran', [PenawaranController::class, 'index'])->name('penawaran');
+        Route::get('/penawaran/tambah', [PenawaranController::class, 'create'])->name('penawaran.create');
+        Route::post('/penawaran', [PenawaranController::class, 'store'])->name('penawaran.store');
+        Route::get('/penawaran/{penawaran}', [PenawaranController::class, 'show'])->name('penawaran.show');
+        Route::get('/penawaran/{penawaran}/ubah', [PenawaranController::class, 'edit'])->name('penawaran.edit');
+        Route::post('/penawaran/{penawaran}/ubah', [PenawaranController::class, 'update'])->name('penawaran.update');
+        Route::post('/penawaran/{penawaran}/kirim', [PenawaranController::class, 'kirim'])->name('penawaran.kirim');
+        Route::post('/penawaran/{penawaran}/harga-akhir', [KeputusanPenawaranController::class, 'hargaAkhir'])->name('penawaran.harga-akhir');
+        Route::post('/penawaran/{penawaran}/won', [KeputusanPenawaranController::class, 'won'])->name('penawaran.won');
+        Route::post('/penawaran/{penawaran}/lost', [KeputusanPenawaranController::class, 'lost'])->name('penawaran.lost');
+        Route::post('/penawaran/{penawaran}/kesepakatan', [KesepakatanController::class, 'store'])->name('kesepakatan.store');
+        Route::post('/kesepakatan/{kesepakatan}/ubah', [KesepakatanController::class, 'update'])->name('kesepakatan.update');
+        Route::post('/kesepakatan/{kesepakatan}/pembayaran', [PembayaranController::class, 'store'])->name('pembayaran.store');
+    });
+
     Route::middleware('permission:kelola akun')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset');
         Route::post('/users/{user}/hapus', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+        Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
     });
 });

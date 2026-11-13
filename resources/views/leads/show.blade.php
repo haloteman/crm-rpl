@@ -283,17 +283,25 @@
         <section class="card p-5">
             <h2 class="text-base font-semibold">Penanggung jawab</h2>
             <p class="mt-1 text-[13px]">{{ $lead->penanggungJawab->name ?? 'Belum ditugaskan' }}</p>
-            <form method="POST" action="{{ route('leads.penanggung-jawab', $lead) }}" class="mt-3 grid gap-3">
-                @csrf
-                <select name="penanggung_jawab_id" class="field @error('penanggung_jawab_id') border-lost @enderror">
-                    <option value="">Pilih Admin</option>
-                    @foreach ($semuaAdmin as $admin)
-                        <option value="{{ $admin->id }}">{{ $admin->name }}</option>
-                    @endforeach
-                </select>
-                @error('penanggung_jawab_id') <p class="text-xs text-lost">{{ $message }}</p> @enderror
-                <button type="submit" class="btn-outline">Tetapkan</button>
-            </form>
+            @if (auth()->user()->hasRole('Owner'))
+                <form method="POST" action="{{ route('leads.penanggung-jawab', $lead) }}" class="mt-3 grid gap-3">
+                    @csrf
+                    <select name="penanggung_jawab_id" class="field @error('penanggung_jawab_id') border-lost @enderror">
+                        <option value="">Pilih Admin</option>
+                        @foreach ($semuaAdmin as $admin)
+                            <option value="{{ $admin->id }}">{{ $admin->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('penanggung_jawab_id') <p class="text-xs text-lost">{{ $message }}</p> @enderror
+                    <button type="submit" class="btn-outline">Tetapkan</button>
+                </form>
+            @elseif (auth()->user()->hasRole('Admin') && ! $lead->penanggung_jawab_id)
+                <form method="POST" action="{{ route('leads.ambil', $lead) }}" class="mt-3 grid gap-3">
+                    @csrf
+                    @error('ambil') <p class="text-xs text-lost">{{ $message }}</p> @enderror
+                    <button type="submit" class="btn-outline">Ambil Lead</button>
+                </form>
+            @endif
         </section>
 
         @if (auth()->user()->hasRole('Owner') && $lead->status === 'Negosiasi')

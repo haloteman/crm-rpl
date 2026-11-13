@@ -5,7 +5,9 @@
         'Negosiasi' => 'badge-amber',
         'Deal' => 'badge-green',
         'Terkonversi' => 'badge-purple',
-        'Tidak Berlanjut' => 'badge-red',
+        'Tidak Berlanjut', 'Ditolak' => 'badge-red',
+        'Dikirim', 'Dibayar Sebagian' => 'badge-amber',
+        'Disetujui', 'Lunas' => 'badge-green',
         default => 'badge-gray',
     };
 @endphp

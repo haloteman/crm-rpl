@@ -3,7 +3,7 @@
 @section('heading', 'Manajemen Akun')
 
 @section('content')
-<div x-data="{ tab: 'pengguna', modal: '{{ $errors->any() ? 'tambah' : (session('kredensial') ? 'kredensial' : '') }}' }"
+<div x-data="{ modal: '{{ $errors->any() ? 'tambah' : (session('kredensial') ? 'kredensial' : '') }}' }"
      @keydown.escape.window="if (modal !== 'kredensial') modal = ''">
 
     {{-- judul + tombol tambah --}}
@@ -17,17 +17,6 @@
         </button>
     </div>
 
-    {{-- tab --}}
-    <div class="mt-5 flex gap-6 border-b text-[13px] font-semibold" role="tablist">
-        <button type="button" role="tab" @click="tab = 'pengguna'"
-                :class="tab === 'pengguna' ? 'border-brand-dark text-brand-dark' : 'border-transparent text-slate-500 hover:text-ink'"
-                class="-mb-px border-b-2 px-1 pb-3">Daftar Pengguna</button>
-        <button type="button" role="tab" @click="tab = 'role'"
-                :class="tab === 'role' ? 'border-brand-dark text-brand-dark' : 'border-transparent text-slate-500 hover:text-ink'"
-                class="-mb-px border-b-2 px-1 pb-3">Hak Akses &amp; Role</button>
-    </div>
-
-    <div x-show="tab === 'pengguna'">
 
     {{-- total akun + info --}}
     <div class="mt-5 flex flex-col gap-4 md:flex-row">
@@ -140,47 +129,6 @@
     </section>
 
     <p class="mt-4 text-xs text-slate-500">Akun yang sudah dihapus tidak ditampilkan. Password tidak ditampilkan dalam daftar pengguna.</p>
-
-    </div>
-
-    {{-- hak akses tiap role, cuma untuk dilihat --}}
-    <section x-show="tab === 'role'" x-cloak class="card mt-5">
-        <div class="px-4 pt-5 sm:px-5">
-            <h2 class="text-base font-semibold">Hak Akses &amp; Role</h2>
-            <p class="mt-1 text-[13px] text-slate-500">Izin yang dimiliki setiap role.</p>
-        </div>
-
-        <div class="mt-4 overflow-x-auto">
-            <table class="w-full min-w-[480px] text-left text-xs">
-                <thead class="bg-thead text-[11px] text-slate-500">
-                    <tr>
-                        <th class="px-[18px] py-2.5 font-medium">Role</th>
-                        @foreach ($semuaIzin as $izin)
-                            <th class="px-[18px] py-2.5 text-center font-medium">{{ ucfirst($izin->name) }}</th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($semuaRole as $role)
-                        <tr class="border-t">
-                            <td class="px-[18px] py-3 text-[13px] font-medium">{{ $role->name }}</td>
-                            @foreach ($semuaIzin as $izin)
-                                <td class="px-[18px] py-3 text-center">
-                                    @if ($role->permissions->contains($izin))
-                                        <x-icon name="check" class="mx-auto size-4 text-won" />
-                                        <span class="sr-only">Ya</span>
-                                    @else
-                                        <span class="text-slate-300">—</span>
-                                        <span class="sr-only">Tidak</span>
-                                    @endif
-                                </td>
-                            @endforeach
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </section>
 
     @foreach ($users as $user)
         {{-- popup konfirmasi reset password --}}
