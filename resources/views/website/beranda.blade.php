@@ -47,13 +47,6 @@
                 </span>
             </div>
 
-            <div class="absolute -bottom-8 -left-3 hidden w-60 gap-3 rounded-2xl border border-white/10 bg-moss/90 p-4 shadow-xl shadow-black/30 backdrop-blur sm:flex md:-left-8">
-                <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-lime text-forest"><x-icon name="check-circle" class="size-5" /></span>
-                <div>
-                    <div class="text-sm font-bold">Tanpa login</div>
-                    <div class="text-[11px] text-white/60">Cukup isi formulir permintaan</div>
-                </div>
-            </div>
         </div>
     </div>
 </section>
