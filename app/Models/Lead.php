@@ -74,6 +74,11 @@ class Lead extends Model
         return $this->hasMany(Konsultasi::class)->orderBy('tanggal')->orderBy('waktu');
     }
 
+    public function penawarans()
+    {
+        return $this->hasMany(Penawaran::class);
+    }
+
     // pelanggan yang kontaknya sama, termasuk yang sudah tertaut dari formulir website
     public function pelangganSama()
     {

@@ -48,9 +48,34 @@ class Penawaran extends Model
         return $this->belongsToMany(Layanan::class, 'penawaran_layanan');
     }
 
+    public function pembuat()
+    {
+        return $this->belongsTo(User::class, 'dibuat_oleh')->withTrashed();
+    }
+
+    public function pengubah()
+    {
+        return $this->belongsTo(User::class, 'diubah_oleh')->withTrashed();
+    }
+
+    public function pengirim()
+    {
+        return $this->belongsTo(User::class, 'dikirim_oleh')->withTrashed();
+    }
+
     public function kesepakatan()
     {
         return $this->hasOne(Kesepakatan::class);
+    }
+
+    public function sudahDiputuskan()
+    {
+        return in_array($this->status, ['Disetujui', 'Ditolak']);
+    }
+
+    public function diskon()
+    {
+        return $this->harga_akhir === null ? null : $this->nilai_penawaran - $this->harga_akhir;
     }
 
     // kalau harga akhir belum ada, pakai nilai penawaran

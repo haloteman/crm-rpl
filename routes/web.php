@@ -82,6 +82,12 @@ Route::middleware(['auth', 'wajib-ganti-password'])->group(function () {
 
     Route::middleware('permission:kelola penawaran')->group(function () {
         Route::get('/penawaran', [PenawaranController::class, 'index'])->name('penawaran');
+        Route::get('/penawaran/tambah', [PenawaranController::class, 'create'])->name('penawaran.create');
+        Route::post('/penawaran', [PenawaranController::class, 'store'])->name('penawaran.store');
+        Route::get('/penawaran/{penawaran}', [PenawaranController::class, 'show'])->name('penawaran.show');
+        Route::get('/penawaran/{penawaran}/ubah', [PenawaranController::class, 'edit'])->name('penawaran.edit');
+        Route::post('/penawaran/{penawaran}/ubah', [PenawaranController::class, 'update'])->name('penawaran.update');
+        Route::post('/penawaran/{penawaran}/kirim', [PenawaranController::class, 'kirim'])->name('penawaran.kirim');
     });
 
     Route::middleware('permission:kelola akun')->group(function () {

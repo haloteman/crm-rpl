@@ -3,8 +3,15 @@
 @section('heading', 'Penawaran')
 
 @section('content')
-<h1 class="page-title">Penawaran</h1>
-<p class="page-sub">Penawaran harga, kesepakatan, dan pembayaran.</p>
+<div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div>
+        <h1 class="page-title">Penawaran</h1>
+        <p class="page-sub">Penawaran harga, kesepakatan, dan pembayaran.</p>
+    </div>
+    <a href="{{ route('penawaran.create') }}" class="btn-primary w-full sm:w-auto">
+        <x-icon name="plus" class="size-4" /> Buat Penawaran
+    </a>
+</div>
 
 {{-- ringkasan --}}
 <div class="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -80,6 +87,7 @@
                     <th class="px-[18px] py-2.5 font-medium">Status Penawaran</th>
                     <th class="px-[18px] py-2.5 font-medium">Status Pembayaran</th>
                     <th class="px-[18px] py-2.5 font-medium">Tanggal</th>
+                    <th class="px-[18px] py-2.5 font-medium">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -98,10 +106,13 @@
                             @endif
                         </td>
                         <td class="px-[18px] py-3 text-slate-500">{{ $penawaran->created_at->format('d/m/Y') }}</td>
+                        <td class="px-[18px] py-3">
+                            <a href="{{ route('penawaran.show', $penawaran) }}" class="font-semibold text-brand-dark hover:underline">Detail</a>
+                        </td>
                     </tr>
                 @empty
                     <tr class="border-t">
-                        <td colspan="7" class="px-5 py-10 text-center text-[13px] text-slate-500">
+                        <td colspan="8" class="px-5 py-10 text-center text-[13px] text-slate-500">
                             {{ request()->except('page') ? 'Data tidak ditemukan' : 'Belum ada penawaran' }}
                         </td>
                     </tr>
