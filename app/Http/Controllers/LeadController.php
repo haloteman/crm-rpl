@@ -243,6 +243,10 @@ class LeadController extends Controller
 
     public function tetapkanPenanggungJawab(Request $request, Lead $lead)
     {
+        if (! auth()->user()->hasRole(Role::OWNER)) {
+            abort(403);
+        }
+
         $semuaAdmin = User::role(Role::ADMIN)->pluck('id');
 
         $request->validate([
@@ -266,6 +270,30 @@ class LeadController extends Controller
         });
 
         return redirect()->route('leads.show', $lead)->with('status', 'Penanggung jawab berhasil ditetapkan');
+    }
+
+    public function ambil(Lead $lead)
+    {
+        if (! auth()->user()->hasRole(Role::ADMIN)) {
+            abort(403);
+        }
+
+        if ($lead->penanggung_jawab_id) {
+            return back()->withErrors(['ambil' => 'Lead sudah memiliki penanggung jawab']);
+        }
+
+        DB::transaction(function () use ($lead) {
+            $lead->update(['penanggung_jawab_id' => auth()->id()]);
+
+            $lead->riwayatInteraksis()->create([
+                'waktu' => now(),
+                'jenis' => 'Penanggung Jawab',
+                'ringkasan' => 'Lead diambil oleh '.auth()->user()->name,
+                'dibuat_oleh' => auth()->id(),
+            ]);
+        });
+
+        return redirect()->route('leads.show', $lead)->with('status', 'Lead berhasil diambil');
     }
 
     private function aturanLead()

@@ -63,6 +63,7 @@ Route::middleware(['auth', 'wajib-ganti-password'])->group(function () {
         Route::post('/leads/{lead}/hapus', [LeadController::class, 'destroy'])->name('leads.destroy');
         Route::post('/leads/{lead}/status', [LeadController::class, 'updateStatus'])->name('leads.status');
         Route::post('/leads/{lead}/penanggung-jawab', [LeadController::class, 'tetapkanPenanggungJawab'])->name('leads.penanggung-jawab');
+        Route::post('/leads/{lead}/ambil', [LeadController::class, 'ambil'])->name('leads.ambil');
         Route::post('/leads/{lead}/interaksi', [RiwayatInteraksiController::class, 'store'])->name('interaksi.store');
         Route::post('/leads/{lead}/follow-up', [FollowUpController::class, 'store'])->name('follow-up.store');
         Route::post('/leads/{lead}/konsultasi', [KonsultasiController::class, 'store'])->name('konsultasi.store');
