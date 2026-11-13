@@ -31,4 +31,9 @@ class Pembayaran extends Model
     {
         return $this->belongsTo(Kesepakatan::class);
     }
+
+    public function pembuat()
+    {
+        return $this->belongsTo(User::class, 'dibuat_oleh')->withTrashed();
+    }
 }

@@ -180,6 +180,88 @@
             </p>
         @endif
 
+        @if ($kesepakatan)
+            <div class="mt-5 border-t pt-4">
+                <div class="flex flex-wrap items-center gap-3">
+                    <h3 class="text-sm font-semibold">Pembayaran</h3>
+                    <x-status-badge :status="$kesepakatan->status_pembayaran" />
+                </div>
+                <p class="mt-2 text-[13px]">
+                    Diterima Rp{{ number_format($kesepakatan->totalDibayar(), 0, ',', '.') }}
+                    dari Rp{{ number_format($kesepakatan->nilai_kesepakatan, 0, ',', '.') }}
+                    · Sisa tagihan <span class="font-semibold">Rp{{ number_format($kesepakatan->sisaTagihan(), 0, ',', '.') }}</span>
+                </p>
+
+                <div class="mt-3 overflow-x-auto">
+                    <table class="w-full min-w-[560px] text-left text-xs">
+                        <thead class="bg-thead text-[11px] text-slate-500">
+                            <tr>
+                                <th class="px-3 py-2 font-medium">Tanggal Bayar</th>
+                                <th class="px-3 py-2 font-medium">Jumlah</th>
+                                <th class="px-3 py-2 font-medium">Metode</th>
+                                <th class="px-3 py-2 font-medium">Catatan</th>
+                                <th class="px-3 py-2 font-medium">Dicatat Oleh</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($kesepakatan->pembayarans as $pembayaran)
+                                <tr class="border-t">
+                                    <td class="px-3 py-2">{{ $pembayaran->tanggal_bayar->format('d/m/Y') }}{{ $loop->first ? ' (DP)' : '' }}</td>
+                                    <td class="px-3 py-2">Rp{{ number_format($pembayaran->jumlah, 0, ',', '.') }}</td>
+                                    <td class="px-3 py-2">{{ $pembayaran->metode }}</td>
+                                    <td class="px-3 py-2">{{ $pembayaran->catatan ?: '—' }}</td>
+                                    <td class="px-3 py-2">{{ $pembayaran->pembuat->name }}, {{ $pembayaran->created_at->format('d/m/Y H:i') }}</td>
+                                </tr>
+                            @empty
+                                <tr class="border-t">
+                                    <td colspan="5" class="px-3 py-4 text-center text-slate-500">Belum ada pembayaran</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                @if ($kesepakatan->sisaTagihan() > 0)
+                    <form method="POST" action="{{ route('pembayaran.store', $kesepakatan) }}" class="mt-4 grid gap-4 sm:grid-cols-2">
+                        @csrf
+                        <h4 class="text-sm font-semibold sm:col-span-2">Catat pembayaran{{ $kesepakatan->pembayarans->isEmpty() ? ' (DP, disarankan 50%)' : '' }}</h4>
+                        <div>
+                            <label for="tanggal_bayar" class="text-xs font-semibold">Tanggal Bayar</label>
+                            <input id="tanggal_bayar" name="tanggal_bayar" type="date" max="{{ today()->format('Y-m-d') }}"
+                                   value="{{ old('tanggal_bayar', today()->format('Y-m-d')) }}"
+                                   class="field mt-1.5 @error('tanggal_bayar') border-lost @enderror">
+                            @error('tanggal_bayar') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label for="jumlah" class="text-xs font-semibold">Jumlah (Rp)</label>
+                            <input id="jumlah" name="jumlah" type="number" min="1" max="{{ $kesepakatan->sisaTagihan() }}"
+                                   value="{{ old('jumlah', $kesepakatan->saranJumlah()) }}"
+                                   class="field mt-1.5 @error('jumlah') border-lost @enderror">
+                            @error('jumlah') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label for="metode" class="text-xs font-semibold">Metode</label>
+                            <select id="metode" name="metode" class="field mt-1.5 @error('metode') border-lost @enderror">
+                                <option value="">Pilih metode</option>
+                                @foreach (\App\Models\Pembayaran::METODE as $metode)
+                                    <option value="{{ $metode }}" @selected(old('metode') === $metode)>{{ $metode }}</option>
+                                @endforeach
+                            </select>
+                            @error('metode') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label for="catatan" class="text-xs font-semibold">Catatan (opsional)</label>
+                            <input id="catatan" name="catatan" value="{{ old('catatan') }}" class="field mt-1.5 @error('catatan') border-lost @enderror">
+                            @error('catatan') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
+                        </div>
+                        <div class="sm:col-span-2">
+                            <button type="submit" class="btn-primary">Catat Pembayaran</button>
+                        </div>
+                    </form>
+                @endif
+            </div>
+        @endif
+
         @if (! $kesepakatan || $kesepakatan->pembayarans->isEmpty())
             <form method="POST" action="{{ $kesepakatan ? route('kesepakatan.update', $kesepakatan) : route('kesepakatan.store', $penawaran) }}"
                   class="mt-4 grid gap-4 border-t pt-4 sm:grid-cols-2">

@@ -11,6 +11,7 @@ use App\Http\Controllers\KonversiController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\PenawaranController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RiwayatInteraksiController;
@@ -95,6 +96,7 @@ Route::middleware(['auth', 'wajib-ganti-password'])->group(function () {
         Route::post('/penawaran/{penawaran}/lost', [KeputusanPenawaranController::class, 'lost'])->name('penawaran.lost');
         Route::post('/penawaran/{penawaran}/kesepakatan', [KesepakatanController::class, 'store'])->name('kesepakatan.store');
         Route::post('/kesepakatan/{kesepakatan}/ubah', [KesepakatanController::class, 'update'])->name('kesepakatan.update');
+        Route::post('/kesepakatan/{kesepakatan}/pembayaran', [PembayaranController::class, 'store'])->name('pembayaran.store');
     });
 
     Route::middleware('permission:kelola akun')->group(function () {

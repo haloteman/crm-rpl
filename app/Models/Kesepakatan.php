@@ -49,4 +49,24 @@ class Kesepakatan extends Model
     {
         return $this->hasMany(Pembayaran::class)->orderBy('tanggal_bayar')->orderBy('id');
     }
+
+    public function totalDibayar()
+    {
+        return (int) $this->pembayarans()->sum('jumlah');
+    }
+
+    public function sisaTagihan()
+    {
+        return $this->nilai_kesepakatan - $this->totalDibayar();
+    }
+
+    // pembayaran pertama (DP) disarankan 50%, berikutnya sisa tagihan
+    public function saranJumlah()
+    {
+        if (! $this->pembayarans()->exists()) {
+            return (int) round($this->nilai_kesepakatan / 2);
+        }
+
+        return $this->sisaTagihan();
+    }
 }
