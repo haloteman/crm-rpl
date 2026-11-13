@@ -9,7 +9,9 @@ use App\Http\Controllers\KonversiController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RiwayatInteraksiController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -81,5 +83,7 @@ Route::middleware(['auth', 'wajib-ganti-password'])->group(function () {
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset');
         Route::post('/users/{user}/hapus', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+        Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
     });
 });

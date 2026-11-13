@@ -8,7 +8,12 @@
         ['route' => 'penawaran',         'label' => 'Penawaran',         'icon' => 'penawaran'],
         ['route' => 'follow-up',         'label' => 'Follow Up',         'icon' => 'follow-up'],
         ['route' => 'project',           'label' => 'Project',           'icon' => 'folder'],
-        ['route' => 'users.index',       'label' => 'Manajemen Akun',    'icon' => 'user-cog', 'match' => 'users.*', 'permission' => 'kelola akun'],
+        ['route' => 'users.index',       'label' => 'Manajemen Akun',    'icon' => 'user-cog', 'match' => ['users.*', 'roles.*', 'permissions.*'], 'permission' => 'kelola akun',
+            'sub' => [
+                ['route' => 'users.index',       'label' => 'Users',       'match' => 'users.*'],
+                ['route' => 'roles.index',       'label' => 'Roles',       'match' => 'roles.*'],
+                ['route' => 'permissions.index', 'label' => 'Permissions', 'match' => 'permissions.*'],
+            ]],
         ['route' => 'riwayat-pembelian', 'label' => 'Riwayat pembelian', 'icon' => 'shopping-bag'],
     ];
 
@@ -47,6 +52,15 @@
                     @endif
                     @if ($active) <span class="size-1.5 rounded-full bg-brand-dark"></span> @endif
                 </a>
+                @if ($active && isset($item['sub']))
+                    @foreach ($item['sub'] as $sub)
+                        @php $subActive = request()->routeIs($sub['match']); @endphp
+                        <a href="{{ route($sub['route']) }}" @if ($subActive) aria-current="page" @endif
+                           class="ml-8 flex h-9 items-center rounded-lg px-3 text-[13px] {{ $subActive ? 'font-semibold text-white' : 'text-white/70 hover:bg-white/10' }}">
+                            {{ $sub['label'] }}
+                        </a>
+                    @endforeach
+                @endif
             @endforeach
         </nav>
 
