@@ -9,6 +9,7 @@ use App\Http\Controllers\KonversiController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PenawaranController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RiwayatInteraksiController;
 use App\Http\Controllers\RoleController;
@@ -77,6 +78,10 @@ Route::middleware(['auth', 'wajib-ganti-password'])->group(function () {
         Route::post('/customer/{pelanggan}/interaksi', [RiwayatInteraksiController::class, 'storePelanggan'])->name('customer.interaksi');
         Route::post('/customer/{pelanggan}/follow-up', [FollowUpController::class, 'storePelanggan'])->name('customer.follow-up');
         Route::post('/follow-up/{followUp}/selesai', [FollowUpController::class, 'selesai'])->name('follow-up.selesai');
+    });
+
+    Route::middleware('permission:kelola penawaran')->group(function () {
+        Route::get('/penawaran', [PenawaranController::class, 'index'])->name('penawaran');
     });
 
     Route::middleware('permission:kelola akun')->group(function () {

@@ -5,7 +5,7 @@
         ['route' => 'dashboard',         'label' => 'Dashboard',         'icon' => 'dashboard', 'permission' => 'lihat dashboard'],
         ['route' => 'leads',             'label' => 'Leads',             'icon' => 'leads', 'match' => 'leads*', 'permission' => 'kelola lead'],
         ['route' => 'customer',          'label' => 'Customer',          'icon' => 'customer', 'match' => 'customer*', 'permission' => 'kelola lead'],
-        ['route' => 'penawaran',         'label' => 'Penawaran',         'icon' => 'penawaran'],
+        ['route' => 'penawaran',         'label' => 'Penawaran',         'icon' => 'penawaran', 'match' => 'penawaran*', 'permission' => 'kelola penawaran'],
         ['route' => 'follow-up',         'label' => 'Follow Up',         'icon' => 'follow-up'],
         ['route' => 'project',           'label' => 'Project',           'icon' => 'folder'],
         ['route' => 'users.index',       'label' => 'Manajemen Akun',    'icon' => 'user-cog', 'match' => ['users.*', 'roles.*', 'permissions.*'], 'permission' => 'kelola akun',
