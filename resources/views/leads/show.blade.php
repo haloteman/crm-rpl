@@ -134,7 +134,7 @@
         {{-- konsultasi --}}
         <section class="card p-5 sm:p-6">
             <div class="flex items-center justify-between gap-3">
-                <h2 class="text-base font-semibold">Konsultasi tatap muka</h2>
+                <h2 class="text-base font-semibold">Konsultasi</h2>
                 @if ($lead->status === 'Negosiasi')
                     <button type="button" @click="modal = 'jadwal'" class="inline-flex items-center gap-1 text-xs font-semibold text-brand-dark hover:underline">
                         <x-icon name="plus" class="size-3.5" /> Jadwalkan Konsultasi
