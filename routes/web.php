@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\FollowUpController;
 use App\Http\Controllers\FormulirLayananController;
+use App\Http\Controllers\KeputusanPenawaranController;
 use App\Http\Controllers\KonsultasiController;
 use App\Http\Controllers\KonversiController;
 use App\Http\Controllers\LeadController;
@@ -88,6 +89,9 @@ Route::middleware(['auth', 'wajib-ganti-password'])->group(function () {
         Route::get('/penawaran/{penawaran}/ubah', [PenawaranController::class, 'edit'])->name('penawaran.edit');
         Route::post('/penawaran/{penawaran}/ubah', [PenawaranController::class, 'update'])->name('penawaran.update');
         Route::post('/penawaran/{penawaran}/kirim', [PenawaranController::class, 'kirim'])->name('penawaran.kirim');
+        Route::post('/penawaran/{penawaran}/harga-akhir', [KeputusanPenawaranController::class, 'hargaAkhir'])->name('penawaran.harga-akhir');
+        Route::post('/penawaran/{penawaran}/won', [KeputusanPenawaranController::class, 'won'])->name('penawaran.won');
+        Route::post('/penawaran/{penawaran}/lost', [KeputusanPenawaranController::class, 'lost'])->name('penawaran.lost');
     });
 
     Route::middleware('permission:kelola akun')->group(function () {

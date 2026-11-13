@@ -77,7 +77,63 @@
             @if ($penawaran->pengirim)
                 <p class="mt-1">Ditandai Dikirim oleh {{ $penawaran->pengirim->name }}, {{ $penawaran->dikirim_at->format('d/m/Y H:i') }}</p>
             @endif
+            @if ($penawaran->penetapHargaAkhir)
+                <p class="mt-1">Harga akhir ditetapkan oleh {{ $penawaran->penetapHargaAkhir->name }}, {{ $penawaran->harga_akhir_at->format('d/m/Y H:i') }}</p>
+            @endif
+            @if ($penawaran->pemutus)
+                <p class="mt-1">Diputuskan {{ $penawaran->status === 'Disetujui' ? 'Won' : 'Lost' }} oleh {{ $penawaran->pemutus->name }}, {{ $penawaran->diputuskan_at->format('d/m/Y H:i') }}</p>
+            @endif
         </section>
+
+        @if ($penawaran->status === 'Ditolak')
+            <section class="card p-5 text-[13px]">
+                <h2 class="text-base font-semibold">Hasil: Lost</h2>
+                <p class="mt-2">Alasan: {{ $penawaran->alasan_lost }}</p>
+                @if ($penawaran->catatan_lost)
+                    <p class="mt-1 whitespace-pre-line text-slate-500">{{ $penawaran->catatan_lost }}</p>
+                @endif
+            </section>
+        @endif
+
+        @if (auth()->user()->hasRole('Owner') && ! $penawaran->sudahDiputuskan())
+            <section class="card p-5">
+                <h2 class="text-base font-semibold">Keputusan Owner</h2>
+
+                @if ($penawaran->status === 'Dikirim')
+                    <form method="POST" action="{{ route('penawaran.harga-akhir', $penawaran) }}" class="mt-3 grid gap-2">
+                        @csrf
+                        <label for="harga_akhir" class="text-xs font-semibold">Harga Akhir (Rp)</label>
+                        <input id="harga_akhir" name="harga_akhir" type="number" min="1" max="{{ $penawaran->nilai_penawaran }}"
+                               value="{{ old('harga_akhir', $penawaran->harga_akhir ?? $penawaran->nilai_penawaran) }}"
+                               class="field @error('harga_akhir') border-lost @enderror">
+                        @error('harga_akhir') <p class="text-xs text-lost">{{ $message }}</p> @enderror
+                        <button type="submit" class="btn-outline">Tetapkan Harga Akhir</button>
+                    </form>
+
+                    <form method="POST" action="{{ route('penawaran.won', $penawaran) }}" class="mt-4">
+                        @csrf
+                        <p class="text-xs text-slate-500">Syarat Won: harga akhir sudah ditetapkan dan lead berstatus Deal.</p>
+                        @error('keputusan') <p class="mt-1 text-xs text-lost">{{ $message }}</p> @enderror
+                        <button type="submit" class="btn-primary mt-2 w-full">Tetapkan Won</button>
+                    </form>
+                @endif
+
+                <form method="POST" action="{{ route('penawaran.lost', $penawaran) }}" class="mt-4 grid gap-2">
+                    @csrf
+                    <label for="alasan_lost" class="text-xs font-semibold">Alasan Lost</label>
+                    <select id="alasan_lost" name="alasan_lost" class="field @error('alasan_lost') border-lost @enderror">
+                        <option value="">Pilih alasan</option>
+                        @foreach (\App\Models\Penawaran::ALASAN_LOST as $alasan)
+                            <option value="{{ $alasan }}" @selected(old('alasan_lost') === $alasan)>{{ $alasan }}</option>
+                        @endforeach
+                    </select>
+                    @error('alasan_lost') <p class="text-xs text-lost">{{ $message }}</p> @enderror
+                    <textarea name="catatan_lost" rows="2" placeholder="Catatan (opsional)" class="field @error('catatan_lost') border-lost @enderror">{{ old('catatan_lost') }}</textarea>
+                    @error('catatan_lost') <p class="text-xs text-lost">{{ $message }}</p> @enderror
+                    <button type="submit" class="btn-outline text-lost">Tetapkan Lost</button>
+                </form>
+            </section>
+        @endif
     </div>
 </div>
 @endsection

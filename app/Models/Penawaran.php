@@ -63,6 +63,16 @@ class Penawaran extends Model
         return $this->belongsTo(User::class, 'dikirim_oleh')->withTrashed();
     }
 
+    public function penetapHargaAkhir()
+    {
+        return $this->belongsTo(User::class, 'harga_akhir_oleh')->withTrashed();
+    }
+
+    public function pemutus()
+    {
+        return $this->belongsTo(User::class, 'diputuskan_oleh')->withTrashed();
+    }
+
     public function kesepakatan()
     {
         return $this->hasOne(Kesepakatan::class);

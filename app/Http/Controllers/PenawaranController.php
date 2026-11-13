@@ -109,7 +109,7 @@ class PenawaranController extends Controller
     public function show(Penawaran $penawaran)
     {
         return view('penawaran.show', [
-            'penawaran' => $penawaran->load(['lead', 'layanans', 'pembuat', 'pengubah', 'pengirim']),
+            'penawaran' => $penawaran->load(['lead', 'layanans', 'pembuat', 'pengubah', 'pengirim', 'penetapHargaAkhir', 'pemutus']),
         ]);
     }
 
